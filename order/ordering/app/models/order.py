@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from sqlmodel import SQLModel, Field
+from datetime import datetime
 from enum import Enum
 
 
@@ -16,22 +17,22 @@ class StatusOrder(Enum):
     ORDERED = 4
 
 
-class Order(BaseModel):
+class Order(SQLModel, table=True):
     """Order model is the base model to take an order"""
 
-    id: int
-    status: StatusOrder
+    id: int = Field(primary_key=True, unique=True)
+    status: StatusOrder = Field(default=StatusOrder.ORDERED, index=True)
 
     customer: str
     # date is represented in the format YYYY-MM-DD
     date: str
     # time is represented in the format HH:MM
-    time: str
+    time: datetime = Field(default=datetime.now().strftime("%H:%M"))
 
-    type: TypeOrder
+    type: TypeOrder = Field(default=TypeOrder.EAT_IN, index=True)
 
-    price: float
-    paid: bool
+    price: float = Field(nullable=False)
+    paid: bool = Field(default=False, index=True)
 
-    created_at: str
-    modified_at: str
+    created_at: datetime = Field(default=datetime.now())
+    modified_at: datetime = Field(default=datetime.now())
