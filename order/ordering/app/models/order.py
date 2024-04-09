@@ -3,18 +3,18 @@ from datetime import datetime
 from enum import Enum
 
 
-class TypeOrder(Enum):
+class TypeOrder(str, Enum):
     """TypeOrder a binary value EAT_IN or TAKEAWAY"""
 
-    EAT_IN = 1
-    TAKEAWAY = 2
+    EAT_IN = "EAT IN"
+    TAKEAWAY = "TAKE AWAY"
 
 
-class StatusOrder(Enum):
-    FINISHED = 1
-    PROCESSING = 2
-    CANCELLED = 3
-    ORDERED = 4
+class StatusOrder(str, Enum):
+    FINISHED = "FINISHED"
+    PROCESSING = "PROCESSING"
+    CANCELLED = "CANCELLED"
+    ORDERED = "ORDERED"
 
 
 class Order(SQLModel, table=True):
