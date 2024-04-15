@@ -14,7 +14,7 @@ before collapse the system and managing to the waiters.
 ## Stack 
 1. _Supabase_ the best think :love:
 2. _Python and FastAPI_ to show an easy mockup 
-3. _Next_ to perform knowledge with react
+3. _React_ just to implement a client app(to scale I'll migrate almost everything to next)
 4. _Tailwindcss_ waiting for v4 :love:
 
 ## Backend
