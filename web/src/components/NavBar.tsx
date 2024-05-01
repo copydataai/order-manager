@@ -1,3 +1,6 @@
+
+import {Logo} from "@/components/Logo";
+
 import { Button } from "@/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 
@@ -7,13 +10,12 @@ export function NavBar() {
     return (
         <nav className="flex items-center justify-between w-1/2 px-4">
             <div >
-                <img className="w-16" src="/orders.webp" alt="" />
+                <Logo />
             </div>
 
             <div>
                 {/* TODO: add side options as links */}
-                <p className="text-lg font-semibold">Orders</p>
-
+                <h3 className="text-2xl font-bold">Orders</h3>
             </div>
 
 
