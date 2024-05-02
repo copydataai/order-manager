@@ -9,7 +9,7 @@ export function Footer() {
             <div className="flex gap-4 w-1/2 justify-between">
                 <div>
                     <div className="flex gap-2 items-center">
-                        <Logo />
+                        <Logo className="h-16 w-16" />
                         <h3 className="text-2xl font-bold">Orders</h3>
                     </div>
                 </div>

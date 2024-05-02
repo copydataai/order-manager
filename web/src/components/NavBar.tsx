@@ -10,7 +10,7 @@ export function NavBar() {
     return (
         <nav className="flex items-center justify-between w-1/2 px-4">
             <div >
-                <Logo />
+                <Logo className="h-16 w-16" />
             </div>
 
             <div>
