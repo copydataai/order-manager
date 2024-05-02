@@ -11,6 +11,12 @@ before collapse the system and managing to the waiters.
 - [ ] Add whisper to read the orders
 - [ ] Add whisper to interact with priority of orders
 
+
+## Debt tech
+- [ ] migrate the react projects as dashboard, web, etc to nextjs
+- [ ] migrate all the nextjs dirs to turbo
+- [ ] design architecture for API manager consider lambda and API GATEWAY for endpoints
+
 ## Stack 
 1. _Supabase_ the best think :love:
 2. _Python and FastAPI_ to show an easy mockup 
