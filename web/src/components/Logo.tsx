@@ -1,5 +1,7 @@
-export function Logo() {
+type LogoProps = React.HTMLAttributes<ImageElement>
+
+export function Logo(props: LogoProps) {
    return (
-       <img className="w-16" src="/orders.webp" alt="Orders Logo" />
+       <img {...props} src="/orders-transformed.webp" alt="Orders Logo" />
     )
 }
