@@ -6,8 +6,8 @@ import { Button } from "@/ui/button";
 
 export function Hero() {
     return (
-        <section className="flex items-center justify-center w-full h-[calc(80vh-2rem)] gap-2 ">
-            <div className="flex flex-col items-center justify-center gap-2">
+        <section className="flex flex-col lg:flex-row items-center justify-center w-full h-[calc(80vh-2rem)] gap-2 ">
+            <div className="flex flex-col  items-center justify-center gap-2">
                 <Logo className="w-96 h-96" />
                 <p className="text-2xl text-muted-foreground">Make your ideal system</p>
             </div>
