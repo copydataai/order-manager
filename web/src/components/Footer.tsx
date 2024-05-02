@@ -4,9 +4,9 @@ import { Icons } from "@/components/icons"
 
 export function Footer() {
     return (
-        <footer className="flex flex-col items-center px-4 gap-4">
+        <footer className="flex flex-col w-full items-center px-4 gap-4">
             {/* top */}
-            <div className="flex gap-4 w-1/2 justify-between">
+            <div className="flex px-4 gap-4 w-full md:w-1/2 justify-between">
                 <div>
                     <div className="flex gap-2 items-center">
                         <Logo className="h-16 w-16" />
@@ -22,7 +22,7 @@ export function Footer() {
             </div>
 
             {/* bottom */}
-            <div className="flex gap-4 w-1/2 justify-between">
+            <div className="flex px-4 py-4 gap-4 w-full md:w-1/2 justify-between">
                 <p>Copyright © 2024 Jose Sanchez</p>
 
                 <div className="flex gap-2 items-center">
