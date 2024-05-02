@@ -23,7 +23,7 @@ class Order(SQLModel, table=True):
 
     order_id: int | None = Field(default=None, primary_key=True)
 
-    organization_id: int = Field(foreign_key="Organization.organization_id", index=True)
+    organization_id: int = Field(foreign_key="organization.organization_id", index=True)
 
     order_date: datetime = Field(default=datetime.now(), index=True)
 
@@ -35,10 +35,10 @@ class Order(SQLModel, table=True):
 
 
 class OrderDetails(SQLModel, table=True):
-    Order_detail_id: int | None = Field(default=None, primary_key=True)
+    order_detail_id: int | None = Field(default=None, primary_key=True)
 
-    order_id: int = Field(foreign_key="Order.order_id")
-    product_id: int = Field(foreign_key="Product.product_id")
+    order_id: int = Field(foreign_key="order.order_id")
+    product_id: int = Field(foreign_key="product.product_id")
 
     quantity: int = Field(gt=0)
     line_total: float = Field(gt=0.0)
