@@ -12,7 +12,8 @@ class TypeOrder(str, Enum):
 
 class StatusOrder(str, Enum):
     FINISHED = "FINISHED"
-    PROCESSING = "PROCESSING"
+    # TODO: Add processing with a track system
+    # PROCESSING = "PROCESSING"
     CANCELLED = "CANCELLED"
     ORDERED = "ORDERED"
 
@@ -20,19 +21,30 @@ class StatusOrder(str, Enum):
 class Order(SQLModel, table=True):
     """Order model is the base model to take an order"""
 
-    id: int = Field(primary_key=True, unique=True)
+    order_id: int | None = Field(default=None, primary_key=True)
+
+    organization_id: int = Field(foreign_key="Organization.organization_id", index=True)
+
+    order_date: datetime = Field(default=datetime.now(), index=True)
+
+    customer_name: str = Field(index=True)
+
     status: StatusOrder = Field(default=StatusOrder.ORDERED, index=True)
 
-    customer: str
-    # date is represented in the format YYYY-MM-DD
-    date: str
-    # time is represented in the format HH:MM
-    time: datetime = Field(default=datetime.now().strftime("%H:%M"))
+    total_amount: float = Field(default=0.0, index=True)
 
-    type: TypeOrder = Field(default=TypeOrder.EAT_IN, index=True)
 
-    price: float = Field(nullable=False)
-    paid: bool = Field(default=False, index=True)
+class OrderDetails(SQLModel, table=True):
+    Order_detail_id: int | None = Field(default=None, primary_key=True)
 
-    created_at: datetime = Field(default=datetime.now())
-    modified_at: datetime = Field(default=datetime.now())
+    order_id: int = Field(foreign_key="Order.order_id")
+    product_id: int = Field(foreign_key="Product.product_id")
+
+    quantity: int = Field(gt=0)
+    line_total: float = Field(gt=0.0)
+
+    # TODO: add feature to add TypeOrder
+    # type: TypeOrder = Field(default=TypeOrder.EAT_IN, index=True)
+
+    # TODO: Add future paid
+    # paid: bool = Field(default=False, index=True)
