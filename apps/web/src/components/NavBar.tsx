@@ -1,5 +1,5 @@
 
-import {Logo} from "@/components/Logo";
+import { Logo } from "@/components/Logo";
 
 import { Button } from "@/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
@@ -27,7 +27,6 @@ export function NavBar() {
                             <AvatarFallback>
                                 AC
                             </AvatarFallback>
-
                         </Avatar>
                         :
                         <Button>
