@@ -8,6 +8,12 @@ importers:
 
   .:
     devDependencies:
+      '@order/prettier-config':
+        specifier: workspace:^
+        version: link:tooling/prettier
+      prettier:
+        specifier: ^3.2.5
+        version: 3.2.5
       turbo:
         specifier: ^1.13.3
         version: 1.13.3
