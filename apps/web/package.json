@@ -8,7 +8,7 @@
     "clean": "git clean -xdf .next .turbo node_modules",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint"
   },
   "dependencies": {
     "@order/ui": "workspace:^",
@@ -22,6 +22,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@order/eslint-config": "workspace:^",
     "@order/prettier-config": "workspace:^",
     "@order/tailwind-config": "workspace:^",
     "@order/tsconfig": "workspace:^",
