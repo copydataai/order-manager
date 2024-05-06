@@ -1,3 +1,4 @@
+from decimal import Decimal
 from enum import Enum
 from sqlmodel import SQLModel, Field, Relationship
 
@@ -16,7 +17,7 @@ class Product(SQLModel, table=True):
     name: str = Field(max_length=255)
     description: str = Field(max_length=5000)
 
-    price: float = Field(gt=0.0)
+    price: Decimal = Field(gt=0, decimal_places=2)
 
     organization_id: int | None = Field(
         default=None, foreign_key="organization.organization_id"
