@@ -9,6 +9,7 @@ hypercorn = "*"
 sqlmodel = "*"
 asyncpg = "*"
 alembic = "*"
+uuid = "*"
 
 [dev-packages]
 pytest = "*"
