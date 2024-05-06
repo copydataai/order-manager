@@ -13,8 +13,8 @@ before collapse the system and managing to the waiters.
 
 
 ## Debt tech
-- [ ] migrate the react projects as dashboard, web, etc to nextjs
-- [ ] migrate all the nextjs dirs to turbo
+- [x] migrate the react projects as dashboard, web, etc to nextjs
+- [x] migrate all the nextjs dirs to turbo
 - [ ] design architecture for API manager consider lambda and API GATEWAY for endpoints
 
 ## Stack 
