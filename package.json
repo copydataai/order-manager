@@ -21,6 +21,8 @@
   },
   "devDependencies": {
     "@order/prettier-config": "workspace:^",
+    "@supabase/ssr": "^0.3.0",
+    "@supabase/supabase-js": "^2.43.1",
     "@turbo/gen": "^1.13.3",
     "prettier": "^3.2.5",
     "turbo": "^1.13.3",
