@@ -54,6 +54,12 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.3(ts-node@10.9.2(@swc/core@1.4.17(@swc/helpers@0.5.5))(@types/node@20.12.8)(typescript@5.4.5)))
     devDependencies:
+      '@order/eslint-config':
+        specifier: workspace:^
+        version: link:../../tooling/eslint
+      '@order/prettier-config':
+        specifier: workspace:^
+        version: link:../../tooling/prettier
       '@order/tailwind-config':
         specifier: workspace:^
         version: link:../../tooling/tailwind

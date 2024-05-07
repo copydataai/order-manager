@@ -21,6 +21,8 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@order/eslint-config": "workspace:^",
+    "@order/prettier-config": "workspace:^",
     "@order/tailwind-config": "workspace:^",
     "@order/tsconfig": "workspace:^",
     "@types/node": "^20.12.8",
@@ -35,5 +37,6 @@
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5"
-  }
+  },
+  "prettier": "@order/prettier-config"
 }
