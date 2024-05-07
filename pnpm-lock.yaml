@@ -212,7 +212,7 @@ importers:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-hook-form:
-        specifier: ^7.51.1
+        specifier: ^7.51.4
         version: 7.51.4(react@18.3.1)
       sonner:
         specifier: ^1.4.41
@@ -255,7 +255,7 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
       zod:
-        specifier: ^3.23.0
+        specifier: ^3.23.6
         version: 3.23.6
 
   tooling/eslint:
