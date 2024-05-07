@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import "~/app/globals.css";
 
+import { Toaster } from "@order/ui/toaster";
+
 export const metadata: Metadata = {
   title: "Orders",
   description: "Orders make your dream restaurant in clicks",
@@ -11,7 +13,10 @@ export const metadata: Metadata = {
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{props.children}</body>
+      <body>
+        <main>{props.children}</main>
+        <Toaster />
+      </body>
     </html>
   );
 }
