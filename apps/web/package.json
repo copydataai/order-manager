@@ -13,7 +13,9 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@order/ui": "workspace:^",
+    "@order/ui": "workspace:*",
+    "@supabase/ssr": "^0.3.0",
+    "@supabase/supabase-js": "^2.43.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.368.0",
