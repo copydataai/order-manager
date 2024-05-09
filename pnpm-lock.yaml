@@ -117,6 +117,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@order/db':
+        specifier: workspace:^
+        version: link:../../packages/db
       '@order/ui':
         specifier: workspace:*
         version: link:../../packages/ui
