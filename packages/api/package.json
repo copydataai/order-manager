@@ -1,0 +1,38 @@
+{
+  "name": "@order/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf .turbo node_modules",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@order/auth": "workspace:*",
+    "@order/db": "workspace:*",
+    "@order/validators": "workspace:*",
+    "@trpc/server": "11.0.0-rc.364",
+    "superjson": "2.2.1",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@order/eslint-config": "workspace:*",
+    "@order/prettier-config": "workspace:*",
+    "@order/tsconfig": "workspace:*",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  },
+  "prettier": "@order/prettier-config"
+}
