@@ -36,10 +36,17 @@ export function WaitlistForm() {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { email } = values;
-    addEmailToWaitlist(email);
-    toast({
-      description: "Thanks for joining the waitlist!",
-    });
+    addEmailToWaitlist(email)
+      .then(() => {
+        toast({
+          description: "Thanks for joining the waitlist!",
+        });
+      })
+      .catch(() => {
+        toast({
+          description: "You were subscribed to the waitlist already",
+        });
+      });
   }
 
   return (
