@@ -19,18 +19,18 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@order/auth": "workspace:*",
     "@order/db": "workspace:*",
-    "@order/validators": "workspace:*",
     "@trpc/server": "11.0.0-rc.364",
+    "@supabase/ssr": "^0.3.0",
+    "@supabase/supabase-js": "^2.43.1",
     "superjson": "2.2.1",
-    "zod": "^3.23.0"
+    "zod": "^3.23.6"
   },
   "devDependencies": {
     "@order/eslint-config": "workspace:*",
     "@order/prettier-config": "workspace:*",
     "@order/tsconfig": "workspace:*",
-    "eslint": "^9.0.0",
+    "eslint": "^9.2.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"
   },
