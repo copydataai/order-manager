@@ -10,9 +10,15 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@order/api": "workspace:^",
     "@order/ui": "workspace:^",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.1",
+    "@t3-oss/env-nextjs": "^0.10.1",
+    "@tanstack/react-query": "^5.35.5",
+    "@trpc/client": "11.0.0-rc.366",
+    "@trpc/react-query": "11.0.0-rc.366",
+    "@trpc/server": "11.0.0-rc.364",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.368.0",
