@@ -20,14 +20,11 @@ class User(SQLModel, table=True):
     like roles, name, auth.user
     """
 
-    user_id: uuid_pkg.UUID = Field(primary_key=True, index=True, nullable=False)
+    id: uuid_pkg.UUID = Field(primary_key=True, index=True)
 
-    name: str = Field(max_length=255)
+    first_name: str = Field(max_length=255, nullable=True)
 
-    # TODO: change str to EmailStr when sqlmodel merge this PR
-    # https://github.com/tiangolo/sqlmodel/pull/762
-    email: str = Field(max_length=255)
-    phone: str = Field(max_length=30)
+    last_name: str = Field(max_length=255, nullable=True)
 
     # TODO: look for integration with sqlmodel
     # for any extra details not allowed by the scheme
@@ -37,7 +34,6 @@ class User(SQLModel, table=True):
 class OrganizationUsers(SQLModel, table=True):
     """OrganizationUsers
     It's public version of users from auth
-    that
     """
 
     __tablename__ = "organization_users"
@@ -46,7 +42,7 @@ class OrganizationUsers(SQLModel, table=True):
         default=None, foreign_key="organization.organization_id", primary_key=True
     )
     user_id: uuid_pkg.UUID = Field(
-        default=None, foreign_key="user.user_id", primary_key=True
+        default=None, foreign_key="user.id", primary_key=True
     )  # Reference to external User model
     role_id: int | None = Field(default=None, foreign_key="roles.role_id")
 
