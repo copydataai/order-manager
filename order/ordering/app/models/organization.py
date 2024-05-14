@@ -10,3 +10,4 @@ class Organization(SQLModel, table=True):
     contact_info: str
 
     products: list["Product"] = Relationship(back_populates="organization")
+    users: list["OrganizationUsers"] = Relationship(back_populates="organization")

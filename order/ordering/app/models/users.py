@@ -1,8 +1,6 @@
 import uuid as uuid_pkg
 from sqlmodel import SQLModel, Field, Relationship
 
-from app.models.organization import Organization
-
 
 class Roles(SQLModel, table=True):
     """Roles
@@ -12,6 +10,8 @@ class Roles(SQLModel, table=True):
 
     role_id: int | None = Field(default=None, primary_key=True)
     name: str = Field(nullable=False, index=True)
+
+    users: list["OrganizationUsers"] = Relationship(back_populates="role")
 
 
 class User(SQLModel, table=True):
@@ -46,7 +46,7 @@ class OrganizationUsers(SQLModel, table=True):
     )  # Reference to external User model
     role_id: int | None = Field(default=None, foreign_key="roles.role_id")
 
-    organization: Organization = Relationship(
+    organization: "Organization" = Relationship(
         back_populates="users", sa_relationship_kwargs={"cascade": "all, delete"}
     )
 

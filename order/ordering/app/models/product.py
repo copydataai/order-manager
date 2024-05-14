@@ -2,8 +2,6 @@ from decimal import Decimal
 from enum import Enum
 from sqlmodel import SQLModel, Field, Relationship
 
-from app.models.organization import Organization
-
 
 class StatusStock(Enum):
     AVAILABLE = "AVAILABLE"
@@ -23,4 +21,4 @@ class Product(SQLModel, table=True):
         default=None, foreign_key="organization.organization_id"
     )
 
-    organization: Organization = Relationship(back_populates="product")
+    organization: "Organization" = Relationship(back_populates="products")
