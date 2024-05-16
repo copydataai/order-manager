@@ -1,4 +1,4 @@
-import { pgTable, foreignKey, pgEnum, serial, integer, numeric, bigint, timestamp, varchar, index, uuid, primaryKey } from "drizzle-orm/pg-core"
+import { pgTable, index, pgEnum, serial, varchar, uuid, unique, timestamp, foreignKey, integer, numeric, primaryKey } from "drizzle-orm/pg-core"
   import { sql } from "drizzle-orm"
 
 export const requestStatus = pgEnum("request_status", ['PENDING', 'SUCCESS', 'ERROR'])
@@ -10,25 +10,10 @@ export const aalLevel = pgEnum("aal_level", ['aal1', 'aal2', 'aal3'])
 export const codeChallengeMethod = pgEnum("code_challenge_method", ['s256', 'plain'])
 export const typeorder = pgEnum("typeorder", ['EAT_IN', 'TAKEAWAY'])
 export const statusorder = pgEnum("statusorder", ['FINISHED', 'CANCELLED', 'ORDERED'])
+export const equalityOp = pgEnum("equality_op", ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'in'])
+export const action = pgEnum("action", ['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'ERROR'])
+export const oneTimeTokenType = pgEnum("one_time_token_type", ['confirmation_token', 'reauthentication_token', 'recovery_token', 'email_change_token_new', 'email_change_token_current', 'phone_change_token'])
 
-
-export const orderdetails = pgTable("orderdetails", {
-	orderDetailId: serial("order_detail_id").primaryKey().notNull(),
-	orderId: integer("order_id").notNull().references(() => order.orderId),
-	productId: integer("product_id").notNull().references(() => product.productId),
-	quantity: integer("quantity").notNull(),
-	lineTotal: numeric("line_total").notNull(),
-});
-
-export const something = pgTable("something", {
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint("id", { mode: "number" }).notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-});
-
-export const alembicVersion = pgTable("alembic_version", {
-	versionNum: varchar("version_num", { length: 32 }).primaryKey().notNull(),
-});
 
 export const roles = pgTable("roles", {
 	roleId: serial("role_id").primaryKey().notNull(),
@@ -41,15 +26,37 @@ export const roles = pgTable("roles", {
 });
 
 export const user = pgTable("user", {
-	userId: uuid("user_id").primaryKey().notNull(),
-	name: varchar("name").notNull(),
-	email: varchar("email").notNull(),
-	phone: varchar("phone").notNull(),
+	id: uuid("id").primaryKey().notNull(),
+	firstName: varchar("first_name"),
+	lastName: varchar("last_name"),
 },
 (table) => {
 	return {
-		ixUserUserId: index("ix_user_user_id").on(table.userId),
+		ixUserId: index("ix_user_id").on(table.id),
 	}
+});
+
+export const waitlist = pgTable("waitlist", {
+	id: serial("id").primaryKey().notNull(),
+	email: varchar("email", { length: 255 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+},
+(table) => {
+	return {
+		waitlistEmailUnique: unique("waitlist_email_unique").on(table.email),
+	}
+});
+
+export const orderdetails = pgTable("orderdetails", {
+	orderDetailId: serial("order_detail_id").primaryKey().notNull(),
+	orderId: integer("order_id").notNull().references(() => order.orderId),
+	productId: integer("product_id").notNull().references(() => product.productId),
+	quantity: integer("quantity").notNull(),
+	lineTotal: numeric("line_total").notNull(),
+});
+
+export const alembicVersion = pgTable("alembic_version", {
+	versionNum: varchar("version_num", { length: 32 }).primaryKey().notNull(),
 });
 
 export const order = pgTable("order", {
@@ -93,7 +100,7 @@ export const product = pgTable("product", {
 
 export const organizationUsers = pgTable("organization_users", {
 	organizationId: integer("organization_id").notNull().references(() => organization.organizationId),
-	userId: uuid("user_id").notNull().references(() => user.userId),
+	userId: uuid("user_id").notNull().references(() => user.id),
 	roleId: integer("role_id").references(() => roles.roleId),
 },
 (table) => {
