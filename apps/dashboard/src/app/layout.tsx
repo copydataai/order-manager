@@ -1,6 +1,7 @@
 import "~/app/globals.css";
 
 import type { Metadata } from "next";
+import { ThemeProvider, ThemeToggle } from "@order/ui/theme";
 
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -18,7 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <div className="absolute bottom-4 right-4">
+            <ThemeToggle />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
