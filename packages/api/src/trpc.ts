@@ -7,10 +7,13 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 
+import type { AuthSession, AuthUser } from "@supabase/ssr";
 import { db } from "@order/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+
+import { CreateServerClient } from "./supabase";
 
 /**
  * 1. CONTEXT
@@ -24,16 +27,46 @@ import { ZodError } from "zod";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = (opts: { headers: Headers }) => {
-    const source = opts.headers.get("x-trpc-source") ?? "unknown";
+interface InnerTRPCContext extends Partial<CreateNextContextOptions> {
+    user: AuthUser | null;
+    auth: AuthSession | null;
+}
 
-    console.log(">>> tRPC Request from", source, "by");
-
+/**
+ * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
+ * it from here.
+ *
+ * Examples of things you may need it for:
+ * - testing, so we don't have to mock Next.js' req/res
+ * - tRPC's `createSSGHelpers`, where we don't have req/res
+ *
+ * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
+ */
+const createInnerTRPCContext = ({ user, auth }: InnerTRPCContext) => {
     return {
+        user,
+        auth,
         db,
     };
 };
 
+/**
+ * This is the actual context you will use in your router. It will be used to process every request
+ * that goes through your tRPC endpoint.
+ *
+ * @see https://trpc.io/docs/context
+ */
+export const createTRPCContext = async ({ req, res }) => {
+    // TODO: extract JWT from req to refresh or save session
+    const supabase = CreateServerClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    return createInnerTRPCContext({
+        user,
+        auth: supabase.auth,
+    });
+};
 /**
  * 2. INITIALIZATION
  *
@@ -88,13 +121,19 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-    if (!ctx) {
+/** Reusable middleware that enforces users are logged in before running the procedure. */
+const enforcedUserIsAuthed = t.middleware(({ ctx, next }) => {
+    console.log(ctx);
+    if (!ctx.user || ctx.user.role !== "authenticated") {
         throw new TRPCError({ code: "UNAUTHORIZED" });
     }
     return next({
         ctx: {
             // infers the `session` as non-nullable
+            user: ctx.user,
+            auth: ctx.auth,
         },
     });
 });
+
+export const protectedProcedure = t.procedure.use(enforcedUserIsAuthed);
