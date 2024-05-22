@@ -1,16 +1,13 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { z } from "zod";
 
-import { CreateServerClient } from "../supabase";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const authRouter = {
     signup: publicProcedure
         .input(z.object({ email: z.string(), password: z.string() }))
-        .mutation(({ ctx, input }) => {
-            const supabase = CreateServerClient();
-
-            const res = supabase.auth.signUp({
+        .mutation(async ({ ctx, input }) => {
+            const res = await ctx.auth.signUp({
                 email: input.email,
                 password: input.password,
             });
@@ -19,13 +16,15 @@ export const authRouter = {
         }),
     login: publicProcedure
         .input(z.object({ email: z.string(), password: z.string() }))
-        .mutation(({ ctx, input }) => {
-            const supabase = CreateServerClient();
-            const res = supabase.auth.signInWithPassword({
+        .mutation(async ({ ctx, input }) => {
+            const { data, error } = await ctx.auth.signInWithPassword({
                 email: input.email,
                 password: input.password,
             });
+            // ctx.session = data.session;
+            ctx.user = data.user;
+            ctx.auth = data.session;
 
-            return res;
+            return data;
         }),
 } satisfies TRPCRouterRecord;
