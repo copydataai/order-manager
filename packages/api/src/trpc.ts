@@ -7,7 +7,7 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 
-import type { AuthSession, AuthUser } from "@supabase/ssr";
+import type { AuthSession, AuthUser } from "@supabase/supabase-js";
 import { db } from "@order/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
@@ -123,7 +123,6 @@ export const publicProcedure = t.procedure;
  */
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforcedUserIsAuthed = t.middleware(({ ctx, next }) => {
-    console.log(ctx);
     if (!ctx.user || ctx.user.role !== "authenticated") {
         throw new TRPCError({ code: "UNAUTHORIZED" });
     }
