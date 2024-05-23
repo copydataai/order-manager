@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@order/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -111,8 +112,10 @@ export function DialogOrganization() {
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="submit">Save changes</Button>
+            <DialogFooter className="sm:justify-start">
+              <DialogClose asChild>
+                <Button type="submit">Save changes</Button>
+              </DialogClose>
             </DialogFooter>
           </form>
         </Form>
