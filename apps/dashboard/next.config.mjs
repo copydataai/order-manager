@@ -1,7 +1,19 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: 'export', // Outputs a Single-Page Application (SPA).
-  distDir: './dist', // Changes the build output directory to `./dist/`.
-}
+// import { fileURLToPath } from "url";
+// import createJiti from "jiti";
 
-export default nextConfig
+// // Import env files to validate at build time. Use jiti so we can load .ts files in here.
+// createJiti(fileURLToPath(import.meta.url))("./src/env");
+
+/** @type {import("next").NextConfig} */
+const config = {
+  reactStrictMode: true,
+
+  /** Enables hot reloading for local packages without a build step */
+  transpilePackages: ["@order/ui"],
+
+  /** We already do linting and typechecking as separate tasks in CI */
+  // eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
+};
+
+export default config;
