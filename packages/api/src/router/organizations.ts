@@ -1,11 +1,15 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { schema } from "@order/db";
+import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { publicProcedure } from "../trpc";
 
 export const organizationRouter = {
     // TODO: change public procedure to protected exept read by id or by name
+    //
+
     create: publicProcedure
         .input(
             z.object({
@@ -37,4 +41,15 @@ export const organizationRouter = {
     listAll: publicProcedure.query(({ ctx }) => {
         return ctx.db.select().from(schema.organization);
     }),
+    getByName: publicProcedure
+        .input(z.object({ name: z.string() }))
+        .query(async ({ input, ctx }) => {
+            const { name } = input;
+            const data = await ctx.db
+                .select()
+                .from(schema.organization)
+                .where(eq(schema.organization.name, name));
+
+            return data[0];
+        }),
 };
