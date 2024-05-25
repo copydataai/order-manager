@@ -27,7 +27,7 @@ import { z } from "zod";
 
 import { api } from "~/trpc/react";
 
-const organizationSchema = z.object({
+const productSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
   price: z.number().or(z.string()).pipe(z.coerce.number()),
@@ -35,8 +35,8 @@ const organizationSchema = z.object({
 });
 
 export function DialogProduct(props: { organizationId: number }) {
-  const form = useForm<z.infer<typeof organizationSchema>>({
-    resolver: zodResolver(organizationSchema),
+  const form = useForm<z.infer<typeof productSchema>>({
+    resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
       description: "",
