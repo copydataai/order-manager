@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { OrganizationCard } from "~/components/OrganizationCard";
 
 export function OrganizationList(props: { organizations: any[] }) {
@@ -15,7 +17,16 @@ export function OrganizationList(props: { organizations: any[] }) {
   return (
     <div className="grid w-full auto-cols-auto grid-flow-col gap-4 ">
       {props.organizations.map((org) => {
-        return <OrganizationCard key={org.id} organization={org} />;
+        return (
+          <Link
+            href="/organization/[id]"
+            as={`/organization/${org.organizationId}`}
+            key={org.organizationId}
+            className=""
+          >
+            <OrganizationCard key={org.organizationId} organization={org} />
+          </Link>
+        );
       })}
     </div>
   );
