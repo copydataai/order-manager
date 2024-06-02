@@ -4,8 +4,6 @@ import { Button } from "@order/ui/button";
 import { Logo } from "~/components/Logo";
 
 export function NavBar() {
-  const userToken = true;
-  const name = "Vite";
   return (
     <nav className="flex w-1/2 items-center justify-between px-4">
       <div>
@@ -17,16 +15,7 @@ export function NavBar() {
         <h3 className="text-2xl font-bold">Orders</h3>
       </div>
 
-      <div className="flex space-x-3">
-        {userToken ? (
-          <Avatar>
-            <AvatarImage src="/vite.svg" />
-            <AvatarFallback>AC</AvatarFallback>
-          </Avatar>
-        ) : (
-          <Button>Signup</Button>
-        )}
-      </div>
+      <div className="flex space-x-3"></div>
     </nav>
   );
 }
