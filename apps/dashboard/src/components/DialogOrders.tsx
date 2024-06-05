@@ -43,11 +43,19 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { api } from "~/trpc/react";
+import { OrderDetailsPopover } from "./PopoverOrderDetails"; // Ensure correct path
+
+const orderDetailsSchema = z.object({
+  productId: z.number(),
+  quantity: z.number().or(z.string()).pipe(z.coerce.number()),
+  lineTotal: z.number().or(z.string()).pipe(z.coerce.number()),
+});
 
 const orderSchema = z.object({
   customerName: z.string().min(1, { message: "Customer name is required" }),
   orderDate: z.date().or(z.string()).optional(),
   status: z.enum(["FINISHED", "CANCELLED", "ORDERED"]),
+  orderDetails: z.array(orderDetailsSchema),
   totalAmount: z.number().or(z.string()).pipe(z.coerce.number()),
   organizationId: z.number().or(z.string()).pipe(z.coerce.number()).optional(),
 });
@@ -62,6 +70,7 @@ export function DialogOrder(props: { organizationId: number }) {
       totalAmount: 0.0,
       orderDate: new Date(),
       organizationId: 5,
+      orderDetails: [], // Initialize orderDetails as an empty array
     },
   });
 
@@ -81,6 +90,22 @@ export function DialogOrder(props: { organizationId: number }) {
 
     await mutation.mutate(values);
   });
+
+  const handleOrderDetailSave = (index, detail) => {
+    const orderDetails = form.getValues("orderDetails");
+    orderDetails[index] = detail;
+    form.setValue("orderDetails", orderDetails);
+  };
+
+  const addNewOrderDetail = () => {
+    const orderDetails = form.getValues("orderDetails");
+    const newDetail = {
+      productId: 0,
+      quantity: 0,
+      lineTotal: 0,
+    };
+    form.setValue("orderDetails", [...orderDetails, newDetail]);
+  };
 
   return (
     <Dialog>
@@ -201,6 +226,22 @@ export function DialogOrder(props: { organizationId: number }) {
                 </FormItem>
               )}
             />
+            <div className="space-y-3">
+              {form.watch("orderDetails").map((detail, index) => (
+                <OrderDetailsPopover
+                  key={index}
+                  orderDetail={detail}
+                  organizationId={organizationId}
+                  index={index}
+                  onSave={(updatedDetail) =>
+                    handleOrderDetailSave(index, updatedDetail)
+                  }
+                />
+              ))}
+              <Button type="button" onClick={addNewOrderDetail}>
+                Add Order Detail
+              </Button>
+            </div>
             <DialogFooter className="sm:justify-start">
               <Button type="submit">Save changes</Button>
             </DialogFooter>
