@@ -20,13 +20,20 @@ import { ChevronsUpDown, Plus, X } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { CarouselProduct } from "~/components/CarouselProduct";
+
 const orderDetailsSchema = z.object({
   productId: z.number(),
   quantity: z.number().or(z.string()).pipe(z.coerce.number()),
   lineTotal: z.number().or(z.string()).pipe(z.coerce.number()),
 });
 
-export function OrderDetailsPopover({ orderDetail, onSave, index }) {
+export function OrderDetailsPopover({
+  orderDetail,
+  onSave,
+  index,
+  organizationId,
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const counter = index + 1;
   const form = useForm({
@@ -60,7 +67,7 @@ export function OrderDetailsPopover({ orderDetail, onSave, index }) {
               {/* TODO: add a popover to list a product by id and use that to select a product(productID) */}
               <FormLabel>Product ID</FormLabel>
               <FormControl>
-                <Input {...form.register("productId")} />
+                <CarouselProduct organizationId={organizationId} />
               </FormControl>
             </FormItem>
             <FormItem>
