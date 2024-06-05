@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@order/ui/button";
+import { Carousel, CarouselContent, CarouselItem } from "@order/ui/carousel";
 import {
   Collapsible,
   CollapsibleContent,
@@ -21,6 +22,7 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { CarouselProduct } from "~/components/CarouselProduct";
+import { api } from "~/trpc/react";
 
 const orderDetailsSchema = z.object({
   productId: z.number(),
@@ -41,9 +43,24 @@ export function OrderDetailsPopover({
     defaultValues: orderDetail,
   });
 
+  const { isPending, isError, data, error } =
+    api.product.listAllByOrganizationID.useQuery({
+      organizationId: parseInt(organizationId),
+    });
+
   const handleSave = form.handleSubmit((values) => {
     onSave(values);
   });
+
+  if (isPending) {
+    return <span> ... Is loading products</span>;
+  }
+
+  if (isError) {
+    return <span> {error.message} </span>;
+  }
+
+  const [units, setUnits] = useState<Array<number>>(new Array(data.length));
 
   return (
     <Collapsible
@@ -67,7 +84,27 @@ export function OrderDetailsPopover({
               {/* TODO: add a popover to list a product by id and use that to select a product(productID) */}
               <FormLabel>Product ID</FormLabel>
               <FormControl>
-                <CarouselProduct organizationId={organizationId} />
+                <Carousel
+                  className="w-full max-w-sm"
+                  opts={{
+                    align: "start",
+                  }}
+                >
+                  <CarouselContent>
+                    {data.map((product, index) => (
+                      <CarouselItem
+                        className="md:basis-1/2 lg:basis-1/3"
+                        key={index}
+                      >
+                        <CarouselProduct
+                          length={data.length}
+                          product={product}
+                          error={error}
+                        />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
               </FormControl>
             </FormItem>
             <FormItem>
