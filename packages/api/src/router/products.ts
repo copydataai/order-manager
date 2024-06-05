@@ -11,8 +11,11 @@ export const productRouter = {
             z.object({
                 name: z.string(),
                 description: z.string(),
-                price: z.number(),
-                organizationId: z.number(),
+                price: z.number().or(z.string()).pipe(z.coerce.number()),
+                organizationId: z
+                    .number()
+                    .or(z.string())
+                    .pipe(z.coerce.number()),
             }),
         )
         .mutation(async ({ input, ctx }) => {
