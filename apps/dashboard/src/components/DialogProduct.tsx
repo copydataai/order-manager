@@ -30,18 +30,21 @@ import { api } from "~/trpc/react";
 const productSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
+  // TODO: Make a research if this the quickest way to a form to validate a string to float or number for the price
   price: z.number().or(z.string()).pipe(z.coerce.number()),
-  organizationId: z.number().optional(),
+  organizationId: z.number().or(z.string()).pipe(z.coerce.number()),
 });
 
 export function DialogProduct(props: { organizationId: number }) {
+  const organizationId = parseInt(props.organizationId);
+
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
       description: "",
       price: 0.0,
-      organizationId: props.organizationId,
+      organizationId: organizationId,
     },
   });
 
@@ -54,11 +57,11 @@ export function DialogProduct(props: { organizationId: number }) {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log("values", values);
-    await mutation.mutate(values);
+    mutation.mutate(values);
   }
 
   return (
@@ -68,7 +71,7 @@ export function DialogProduct(props: { organizationId: number }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create Organization</DialogTitle>
+          <DialogTitle>Create Product</DialogTitle>
           <DialogDescription>
             Open an organization to start selling.
           </DialogDescription>
@@ -115,7 +118,9 @@ export function DialogProduct(props: { organizationId: number }) {
               )}
             />
             <DialogFooter className="sm:justify-start">
-              <Button type="submit">Save changes</Button>
+              <DialogClose asChild>
+                <Button type="submit">Save changes</Button>
+              </DialogClose>
             </DialogFooter>
           </form>
         </Form>
