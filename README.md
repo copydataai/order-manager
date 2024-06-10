@@ -27,15 +27,6 @@ before collapse the system and managing to the waiters.
 
 ### Endpoints
 
-- `/orders`
-    - GET, POST
-    - get all the orders based on the token to get the organization id
-    - create and order based on the token to get the organization id
-
-- `/orders/:id`
-    - GET, PATCH, PUT
-    - retrieve an order by id
-    - edit or edit full an order by id
 
 - `/products`
     - GET, POST
@@ -52,6 +43,16 @@ before collapse the system and managing to the waiters.
   - just admin has access to modify
   - Auth: id == organization.id get 404 not found(not a 403 forbidden)
   - show organization id
+
+- `/organizations/:organizationId/orders`
+    - GET, POST
+    - get all the orders based on the token to get the organization id
+    - create and order based on the token to get the organization id
+
+- `/organizations/:organizationId/orders/:orderId`
+    - GET, PATCH, PUT
+    - retrieve an order by id
+    - edit or edit full an order by id
 
 - `/organizations`
     - POST 
