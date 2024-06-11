@@ -111,7 +111,10 @@ export const orderRouter = {
         }),
     // TODO: add input by user and check which organization it belongs
     listAll: publicProcedure.query(async ({ ctx }) => {
-        const orders = await ctx.db.select().from(schema.order);
+        const orders = await ctx.db.select().from(schema.order).leftJoin(
+            schema.organization,
+            eq(schema.order.organizationId, schema.organization.organizationId),
+        );
         return orders;
     }),
 };
