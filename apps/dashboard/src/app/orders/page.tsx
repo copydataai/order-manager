@@ -3,16 +3,14 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { api } from "~/trpc/server";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
+type Organization = {
+  organizationId: number;
+  name: string;
+  location: string;
+  contactInfo: string;
 };
 
-export type Order = {
+type Order = {
   orderId: number;
   orderDate: Date;
   customerName: string;
@@ -20,25 +18,34 @@ export type Order = {
   totalAmount: number;
 };
 
-export const columns: ColummDef<Order> = [
+type ColumnOrganizationOrder = {
+  order: Order;
+  organization: Organization;
+};
+
+export const columns: ColummDef<ColumnOrganizationOrder> = [
   {
-    accessorKey: "orderId",
+    accessorKey: "order.orderId",
     header: "Order ID",
   },
   {
-    accessorKey: "orderDate",
+    accessorKey: "organization.name",
+    header: "Organization",
+  },
+  {
+    accessorKey: "order.orderDate",
     header: "Order Date",
   },
   {
-    accessorKey: "customerName",
+    accessorKey: "order.customerName",
     header: "Customer Name",
   },
   {
-    accessorKey: "status",
+    accessorKey: "order.status",
     header: "Status",
   },
   {
-    accessorKey: "totalAmount",
+    accessorKey: "order.totalAmount",
     header: "Total Amount",
   },
 ];
@@ -46,7 +53,6 @@ export const columns: ColummDef<Order> = [
 export default async function OrdersPage() {
   const data = await api.order.listAll();
 
-  console.log(data);
   return (
     <section className="container">
       <DataTable data={data} columns={columns} />
