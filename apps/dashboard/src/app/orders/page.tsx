@@ -1,7 +1,19 @@
-import { DataTable } from "@order/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
+"use client";
 
-import { api } from "~/trpc/server";
+import { Button } from "@order/ui/button";
+import { DataTable } from "@order/ui/data-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@order/ui/dropdown-menu";
+import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
+
+import { api } from "~/trpc/react";
 
 type Organization = {
   organizationId: number;
@@ -23,7 +35,7 @@ type ColumnOrganizationOrder = {
   organization: Organization;
 };
 
-export const columns: ColummDef<ColumnOrganizationOrder> = [
+export const columns: ColumnDef<ColumnOrganizationOrder>[] = [
   {
     accessorKey: "order.orderId",
     header: "Order ID",
@@ -48,10 +60,37 @@ export const columns: ColummDef<ColumnOrganizationOrder> = [
     accessorKey: "order.totalAmount",
     header: "Total Amount",
   },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const organization = row.original.organization;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            {/* TODO: add dialog or modal to edit specific order */}
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(organization.name)}
+            >
+              edit
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
 ];
 
-export default async function OrdersPage() {
-  const data = await api.order.listAll();
+export default function OrdersPage() {
+  const { data = [], isLoading } = api.order.listAll.useQuery(); // Default to an empty array
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <section className="container">
