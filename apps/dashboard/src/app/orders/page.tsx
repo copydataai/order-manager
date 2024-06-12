@@ -90,7 +90,13 @@ export const columns: ColumnDef<ColumnOrganizationOrder>[] = [
 export default function OrdersPage() {
   const { data = [], isLoading } = api.order.listAll.useQuery(); // Default to an empty array
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <section className="flex items-center justify-center">
+        {/* TODO: add loading state */}
+        <div>Loading...</div>
+      </section>
+    );
 
   return (
     <section className="container">
