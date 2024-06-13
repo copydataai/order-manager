@@ -26,23 +26,23 @@ type Order = {
 
 export const columns: ColumnDef<Order>[] = [
   {
-    accessorKey: "order.orderId",
+    accessorKey: "orderId",
     header: "Order ID",
   },
   {
-    accessorKey: "order.orderDate",
+    accessorKey: "orderDate",
     header: "Order Date",
   },
   {
-    accessorKey: "order.customerName",
+    accessorKey: "customerName",
     header: "Customer Name",
   },
   {
-    accessorKey: "order.status",
+    accessorKey: "status",
     header: "Status",
   },
   {
-    accessorKey: "order.totalAmount",
+    accessorKey: "totalAmount",
     header: "Total Amount",
   },
   {
