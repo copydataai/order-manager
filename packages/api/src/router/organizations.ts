@@ -50,8 +50,18 @@ export const organizationRouter = {
             const { name } = input;
             return ctx.db.select().from(schema.organization).where({ name });
         }),
-    listAll: publicProcedure.query(({ ctx }) => {
-        return ctx.db.select().from(schema.organization);
+    listAll: protectedProcedure.query(({ ctx }) => {
+        console.log(ctx.user.id);
+        return ctx.db
+            .select(schema.organization)
+            .from(schema.organizationUsers)
+            .innerJoin(
+                schema.organization,
+                eq(
+                    schema.organization.organizationId,
+                    schema.organizationUsers.organizationId,
+                ),
+            );
     }),
     getByName: publicProcedure
         .input(z.object({ name: z.string() }))
