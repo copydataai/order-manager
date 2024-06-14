@@ -8,6 +8,7 @@
  */
 
 import type { AuthSession, AuthUser } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
 import { db } from "@order/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
@@ -59,9 +60,11 @@ const createInnerTRPCContext = ({ user, auth }: InnerTRPCContext) => {
 export const createTRPCContext = async ({ req, res }) => {
     // TODO: extract JWT from req to refresh or save session
     const supabase = CreateServerClient();
+    const cookiesStore = cookies();
+    const session = await cookiesStore.get("session");
     const {
         data: { user },
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(session?.value);
     return createInnerTRPCContext({
         user,
         auth: supabase.auth,
@@ -124,7 +127,9 @@ export const publicProcedure = t.procedure;
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforcedUserIsAuthed = t.middleware(({ ctx, next }) => {
     if (!ctx.user || ctx.user.role !== "authenticated") {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
+        throw new TRPCError({
+            code: "UNAUTHORIZED",
+        });
     }
     return next({
         ctx: {
