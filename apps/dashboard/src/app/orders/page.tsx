@@ -13,6 +13,7 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
+import { redirectAuth } from "~/actions/redirect";
 import { api } from "~/trpc/react";
 
 type Organization = {
@@ -80,6 +81,7 @@ export const columns: ColumnDef<ColumnOrganizationOrder>[] = [
             >
               edit
             </DropdownMenuItem>
+            <DropdownMenuItem>show details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -88,7 +90,13 @@ export const columns: ColumnDef<ColumnOrganizationOrder>[] = [
 ];
 
 export default function OrdersPage() {
-  const { data = [], isLoading } = api.order.listAll.useQuery(); // Default to an empty array
+  const { data = [], isLoading, isError, error } = api.order.listAll.useQuery(); // Default to an empty array
+
+  if (isError) {
+    if (error.shape.message === "UNAUTHORIZED") {
+      redirectAuth();
+    }
+  }
 
   if (isLoading)
     return (
