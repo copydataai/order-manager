@@ -4,11 +4,23 @@ import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
-import { publicProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const organizationRouter = {
     // TODO: change public procedure to protected exept read by id or by name
     //
+    //
+
+    createRole: protectedProcedure
+        .input(z.object({ name: z.string() }))
+        .mutation(async ({ input, ctx }) => {
+            const { name } = input;
+            const data = await ctx.db
+                .insert(schema.roles)
+                .values({ name })
+                .returning();
+            return data;
+        }),
 
     create: publicProcedure
         .input(
