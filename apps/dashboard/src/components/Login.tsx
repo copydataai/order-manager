@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { api } from "~/trpc/react";
+import { getAuthSession, setAuthSession } from "~/utils/auth/cookies";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -36,6 +37,7 @@ export function Login() {
     onSuccess: async (data) => {
       console.log("It's okay");
       console.log(data);
+      await setAuthSession(data.session); // Ensure this is awaited if it's a Promise
     },
     onError: (error) => {
       console.error("It's heaven");
@@ -43,10 +45,10 @@ export function Login() {
     },
   });
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    await message.mutate(values);
+    message.mutate(values);
   }
 
   return (
