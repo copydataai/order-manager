@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@order/ui/button";
-import { Carousel, CarouselContent, CarouselItem } from "@order/ui/carousel";
 import {
   Collapsible,
   CollapsibleContent,
@@ -12,13 +11,21 @@ import {
 import {
   Form,
   FormControl,
+  FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@order/ui/form";
 import { Input } from "@order/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@order/ui/select";
 import { ChevronsUpDown, Plus, X } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { CarouselProduct } from "~/components/CarouselProduct";
@@ -60,7 +67,10 @@ export function OrderDetailsPopover({
     return <span> {error.message} </span>;
   }
 
-  const [units, setUnits] = useState<Array<number>>(new Array(data.length));
+  const updateProductUnits = (productId, units) => {
+    form.setValue("quantity", units);
+    form.setValue("productId", productId);
+  };
 
   return (
     <Collapsible
@@ -80,45 +90,39 @@ export function OrderDetailsPopover({
       <CollapsibleContent className="space-y-2">
         <Form {...form}>
           <form onSubmit={handleSave} className="space-y-3">
-            <FormItem>
-              {/* TODO: add a popover to list a product by id and use that to select a product(productID) */}
-              <FormLabel>Product ID</FormLabel>
-              <FormControl>
-                <Carousel
-                  className="w-full max-w-sm"
-                  opts={{
-                    align: "start",
-                  }}
-                >
-                  <CarouselContent>
-                    {data.map((product, index) => (
-                      <CarouselItem
-                        className="md:basis-1/2 lg:basis-1/3"
-                        key={index}
-                      >
-                        <CarouselProduct
-                          length={data.length}
-                          product={product}
-                          error={error}
-                        />
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                </Carousel>
-              </FormControl>
-            </FormItem>
-            <FormItem>
-              <FormLabel>Quantity</FormLabel>
-              <FormControl>
-                <Input {...form.register("quantity")} />
-              </FormControl>
-            </FormItem>
-            <FormItem>
-              <FormLabel>Line Total</FormLabel>
-              <FormControl>
-                <Input {...form.register("lineTotal")} />
-              </FormControl>
-            </FormItem>
+            <FormField
+              control={form.control}
+              name="productId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Product</FormLabel>
+                  {/* // TODO: change Carousel by select */}
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Product" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {data.map((product, index) => (
+                        <SelectItem key={index} value={product.name}>
+                          {product.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p>{field.value}</p>
+                </FormItem>
+              )}
+            />
+
+            <p>Quantity: {form.watch("quantity")}</p>
+            <p>Line Total: {form.watch("quantity")}</p>
             <Button type="submit">Save</Button>
           </form>
         </Form>
