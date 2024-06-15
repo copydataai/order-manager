@@ -3,7 +3,7 @@ import { schema } from "@order/db";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
-import { publicProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const orderRouter = {
     create: publicProcedure
@@ -110,11 +110,17 @@ export const orderRouter = {
             return orders;
         }),
     // TODO: add input by user and check which organization it belongs
-    listAll: publicProcedure.query(async ({ ctx }) => {
-        const orders = await ctx.db.select().from(schema.order).leftJoin(
-            schema.organization,
-            eq(schema.order.organizationId, schema.organization.organizationId),
-        );
+    listAll: protectedProcedure.query(async ({ ctx }) => {
+        const orders = await ctx.db
+            .select()
+            .from(schema.order)
+            .leftJoin(
+                schema.organization,
+                eq(
+                    schema.order.organizationId,
+                    schema.organization.organizationId,
+                ),
+            );
         return orders;
     }),
 };
