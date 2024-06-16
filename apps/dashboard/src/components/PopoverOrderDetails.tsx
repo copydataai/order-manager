@@ -32,7 +32,6 @@ import { api } from "~/trpc/react";
 
 const orderDetailsSchema = z.object({
   productId: z.number(),
-  productName: z.string().min(1, { message: "Required" }),
   quantity: z.number().or(z.string()).pipe(z.coerce.number()),
   lineTotal: z.number().or(z.string()).pipe(z.coerce.number()),
 });
@@ -94,14 +93,7 @@ export function OrderDetailsPopover({
       </div>
       <CollapsibleContent className="space-y-2">
         <Form {...form}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              console.log(form.getValues());
-              return handleSave();
-            }}
-            className="space-y-3"
-          >
+          <form className="space-y-3">
             <FormField
               control={form.control}
               name="productId"
@@ -167,7 +159,15 @@ export function OrderDetailsPopover({
             <p>Quantity: {form.watch("quantity")}</p>
             <p>LineTotal: {form.watch("lineTotal")}</p>
 
-            <Button type="submit">Save</Button>
+            <Button
+              type="button"
+              onClick={() => {
+                console.log(form.getValues());
+                handleSave();
+              }}
+            >
+              Save
+            </Button>
           </form>
         </Form>
       </CollapsibleContent>
