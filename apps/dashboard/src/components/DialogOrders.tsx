@@ -92,10 +92,16 @@ export function DialogOrder(props: { organizationId: number }) {
     await mutation.mutate(values);
   });
 
+  const calculateTotalAmount = (orderDetails: orderDetailsSchema[]) => {
+    return orderDetails.reduce((total, detail) => total + detail.lineTotal, 0);
+  };
+
   const handleOrderDetailSave = (index, detail) => {
     const orderDetails = form.getValues("orderDetails");
     orderDetails[index] = detail;
     form.setValue("orderDetails", orderDetails);
+
+    form.setValue("totalAmount", calculateTotalAmount(orderDetails));
   };
 
   const addNewOrderDetail = () => {
@@ -175,7 +181,7 @@ export function DialogOrder(props: { organizationId: number }) {
                 <FormItem>
                   <FormLabel>Total amount</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} value={field.value} disabled />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
