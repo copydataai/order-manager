@@ -74,7 +74,7 @@ export function DialogOrder(props: { organizationId: number }) {
     },
   });
 
-  const mutation = api.order.create.useMutation({
+  const mutation = api.order.createOrderAndOrderDetails.useMutation({
     onSuccess: (data) => {
       console.log("Order created successfully:", data);
     },
@@ -84,6 +84,7 @@ export function DialogOrder(props: { organizationId: number }) {
   });
 
   const handleSubmit = form.handleSubmit(async (values) => {
+    console.log(form);
     if (typeof values.orderDate === "string") {
       values.orderDate = new Date(values.orderDate);
     }
@@ -123,6 +124,8 @@ export function DialogOrder(props: { organizationId: number }) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              console.log("form", form.getValues());
+              console.log("form", form);
               handleSubmit(e);
             }}
             className="space-y-3"
