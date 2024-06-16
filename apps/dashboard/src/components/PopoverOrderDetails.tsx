@@ -69,6 +69,12 @@ export function OrderDetailsPopover({
 
   const updateProductUnits = (units) => {
     form.setValue("quantity", units);
+    const price = data.find(
+      (product) => product.productId === form.watch("productId"),
+    )?.price;
+    const lineTotal = units * price;
+
+    form.setValue("lineTotal", lineTotal);
   };
 
   return (
@@ -102,7 +108,7 @@ export function OrderDetailsPopover({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Product</FormLabel>
-                  {/* // TODO: change Carousel by select */}
+                  {/* TODO: add watcher or observator to change units */}
                   <Select
                     onValueChange={(value) => {
                       const product = data.find(
@@ -159,13 +165,7 @@ export function OrderDetailsPopover({
             />
 
             <p>Quantity: {form.watch("quantity")}</p>
-            <p>
-              LineTotal:{" "}
-              {form.watch("quantity") *
-                data.find(
-                  (product) => product.productId === form.watch("productId"),
-                )?.price}
-            </p>
+            <p>LineTotal: {form.watch("lineTotal")}</p>
 
             <Button type="submit">Save</Button>
           </form>
