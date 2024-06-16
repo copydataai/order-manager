@@ -28,11 +28,11 @@ import { ChevronsUpDown, Plus, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { CarouselProduct } from "~/components/CarouselProduct";
 import { api } from "~/trpc/react";
 
 const orderDetailsSchema = z.object({
   productId: z.number(),
+  productName: z.string().min(1, { message: "Required" }),
   quantity: z.number().or(z.string()).pipe(z.coerce.number()),
   lineTotal: z.number().or(z.string()).pipe(z.coerce.number()),
 });
@@ -67,9 +67,8 @@ export function OrderDetailsPopover({
     return <span> {error.message} </span>;
   }
 
-  const updateProductUnits = (productId, units) => {
+  const updateProductUnits = (units) => {
     form.setValue("quantity", units);
-    form.setValue("productId", productId);
   };
 
   return (
@@ -89,7 +88,14 @@ export function OrderDetailsPopover({
       </div>
       <CollapsibleContent className="space-y-2">
         <Form {...form}>
-          <form onSubmit={handleSave} className="space-y-3">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              console.log(form.getValues());
+              return handleSave();
+            }}
+            className="space-y-3"
+          >
             <FormField
               control={form.control}
               name="productId"
@@ -99,9 +105,11 @@ export function OrderDetailsPopover({
                   {/* // TODO: change Carousel by select */}
                   <Select
                     onValueChange={(value) => {
-                      field.onChange(value);
+                      const product = data.find(
+                        (product) => product.name === value,
+                      );
+                      field.onChange(product.productId);
                     }}
-                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger className="w-[180px]">
@@ -120,9 +128,45 @@ export function OrderDetailsPopover({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-10"
+                        onClick={() => updateProductUnits(field.value - 1)}
+                      >
+                        -
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-10"
+                        onClick={() => updateProductUnits(field.value + 1)}
+                      >
+                        +
+                      </Button>
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
             <p>Quantity: {form.watch("quantity")}</p>
-            <p>Line Total: {form.watch("quantity")}</p>
+            <p>
+              LineTotal:{" "}
+              {form.watch("quantity") *
+                data.find(
+                  (product) => product.productId === form.watch("productId"),
+                )?.price}
+            </p>
+
             <Button type="submit">Save</Button>
           </form>
         </Form>
