@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Button } from "@order/ui/button";
+
 import { DialogProduct } from "~/components/DialogProduct";
 import { ProductList } from "~/components/ProductList";
 import { api } from "~/trpc/server";
@@ -15,10 +18,17 @@ export default async function OrganizationPage({
     organizationId,
   });
 
+  const ordersPath = `/organization/${id}/orders`;
+
   return (
     <>
       <section className="flex flex-col items-center justify-center gap-12 px-4 py-16">
-        <DialogProduct organizationId={id} />
+        <div className="flex gap-4">
+          <Button asChild>
+            <Link href={ordersPath}>Create Order</Link>
+          </Button>
+          <DialogProduct organizationId={id} />
+        </div>
         <ProductList products={products} />
       </section>
     </>
