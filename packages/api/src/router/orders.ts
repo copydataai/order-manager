@@ -65,24 +65,51 @@ export const orderRouter = {
     createOrderAndOrderDetails: publicProcedure
         .input(
             z.object({
-                productId: z.number(),
-                orderId: z.number(),
-                quantity: z.number(),
-                lineTotal: z.number(),
+                // TODO add enum statusorder by db.schema
+
+                orderDate: z.date(),
+                customerName: z.string(),
+                status: z.string(),
+                totalAmount: z.number(),
+                organizationId: z.number(),
                 orderDetails: z.array(
                     z.object({
-                        orderDate: z.date(),
-                        customerName: z.string(),
-                        // TODO add enum statusorder by db.schema
-                        status: z.string(),
-                        totalAmount: z.number(),
-                        organizationId: z.number(),
+                        quantity: z.number(),
+                        lineTotal: z.number(),
+                        productId: z.number(),
                     }),
                 ),
             }),
         )
         .mutation(async ({ input, ctx }) => {
             console.log(input);
+            const {
+                orderDate,
+                customerName,
+                status,
+                totalAmount,
+                organizationId,
+                orderDetails,
+            } = input;
+            const order = await ctx.db
+                .insert(schema.order)
+                .values({
+                    orderDate: orderDate.toISOString(),
+                    customerName,
+                    status,
+                    totalAmount,
+                    organizationId,
+                })
+                .returning();
+
+            const orderId = order[0].orderId;
+
+            await ctx.db.insert(schema.orderdetails).values(
+                orderDetails.map((detail) => ({
+                    ...detail,
+                    orderId,
+                })),
+            );
             return "thank you";
         }),
 
