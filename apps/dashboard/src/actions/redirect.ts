@@ -1,6 +1,6 @@
 "use server";
 
-import { redirect, usePathname } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export async function redirectAuth() {
     redirect("/auth");
