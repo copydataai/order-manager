@@ -3,6 +3,7 @@ import { Button } from "@order/ui/button";
 
 import { DialogProduct } from "~/components/DialogProduct";
 import { ProductList } from "~/components/ProductList";
+import { TeamMembersCard } from "~/components/TeamMembersCard";
 import { api } from "~/trpc/server";
 
 export default async function OrganizationPage({
@@ -30,6 +31,7 @@ export default async function OrganizationPage({
           <DialogProduct organizationId={id} />
         </div>
         <ProductList products={products} />
+        <TeamMembersCard organizationId={organizationId} />
       </section>
     </>
   );
