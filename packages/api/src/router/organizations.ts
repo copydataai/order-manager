@@ -22,6 +22,34 @@ export const organizationRouter = {
             return data;
         }),
 
+    listRoles: publicProcedure.query(({ ctx }) => {
+        return ctx.db.select().from(schema.roles);
+    }),
+
+    listUserAndRolesByOrganizationId: protectedProcedure
+        .input(z.object({ organizationId: z.number() }))
+        .query(async ({ input, ctx }) => {
+            const { organizationId } = input;
+            const usersRoles = await ctx.db
+                .select({ ...schema.roles, ...schema.user })
+                .from(schema.organizationUsers)
+                .where(
+                    eq(schema.organizationUsers.organizationId, organizationId),
+                )
+                .innerJoin(
+                    schema.roles,
+                    eq(schema.roles.roleId, schema.organizationUsers.roleId),
+                )
+                .innerJoin(
+                    schema.user,
+                    eq(schema.user.id, schema.organizationUsers.userId),
+                );
+            console.log(usersRoles);
+
+            // return {users, roles};
+            return usersRoles;
+        }),
+
     create: publicProcedure
         .input(
             z.object({
