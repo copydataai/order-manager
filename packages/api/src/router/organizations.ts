@@ -79,10 +79,11 @@ export const organizationRouter = {
             return ctx.db.select().from(schema.organization).where({ name });
         }),
     listAll: protectedProcedure.query(({ ctx }) => {
-        console.log(ctx.user.id);
+        const userId = ctx.user.id;
         return ctx.db
             .select(schema.organization)
             .from(schema.organizationUsers)
+            .where(eq(schema.organizationUsers.userId, userId))
             .innerJoin(
                 schema.organization,
                 eq(
