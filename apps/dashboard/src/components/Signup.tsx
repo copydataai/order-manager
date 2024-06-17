@@ -20,6 +20,9 @@ import { api } from "~/trpc/react";
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(1, { message: "Please enter a password" }),
+
+  firstName: z.string().min(1, { message: "Please enter your first name" }),
+  lastName: z.string().min(1, { message: "Please enter your last name" }),
 });
 
 export function Signup() {
@@ -54,9 +57,36 @@ export function Signup() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
           control={form.control}
+          name="firstName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="">First name</FormLabel>
+              <FormControl>
+                <Input placeholder="John" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="">Last name</FormLabel>
+              <FormControl>
+                <Input placeholder="Cage" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
+              <FormLabel className="">Email</FormLabel>
               <FormControl>
                 <Input placeholder="pasta@email.com" {...field} />
               </FormControl>
@@ -69,6 +99,7 @@ export function Signup() {
           name="password"
           render={({ field }) => (
             <FormItem>
+              <FormLabel className="">Password</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
