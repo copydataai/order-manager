@@ -6,11 +6,24 @@ import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const authRouter = {
     signup: publicProcedure
-        .input(z.object({ email: z.string(), password: z.string() }))
+        .input(
+            z.object({
+                email: z.string(),
+                password: z.string(),
+                firstName: z.string(),
+                lastName: z.string(),
+            }),
+        )
         .mutation(async ({ ctx, input }) => {
             const { data, error } = await ctx.auth.signUp({
                 email: input.email,
                 password: input.password,
+                options: {
+                    data: {
+                        first_name: input.firstName,
+                        last_name: input.lastName,
+                    },
+                },
             });
             if (error) {
                 throw new TRPCError({
