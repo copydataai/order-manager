@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { Analytics } from "@vercel/analytics/react";
 
 import { PHProvider } from "~/app/provider";
 
@@ -26,7 +25,6 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           <PostHogPageView />
           <main>{props.children}</main>
           <Toaster />
-          <Analytics />
         </body>
       </PHProvider>
     </html>
