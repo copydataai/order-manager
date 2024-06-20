@@ -11,6 +11,11 @@ export async function getAuthSession(): AuthSession | undefined {
     return session;
 }
 
+export async function removeAuthSession() {
+    const cookieStore = cookies();
+    cookieStore.delete("session");
+}
+
 export async function setAuthSession(session: AuthSession) {
     const cookieStore = cookies();
     const text = session.access_token;
