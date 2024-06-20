@@ -3,6 +3,14 @@
 import type { AuthSession } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
+export async function getAuthSession(): AuthSession | undefined {
+    const cookieStore = cookies();
+    const session = cookieStore.get("session");
+    // TODO: add auth refreshSession
+
+    return session;
+}
+
 export async function setAuthSession(session: AuthSession) {
     const cookieStore = cookies();
     const text = session.access_token;
@@ -14,5 +22,4 @@ export async function setAuthSession(session: AuthSession) {
         sameSite: "strict",
         secure: true,
     });
-    console.log("cookie", cookieStore.get("session"));
 }
