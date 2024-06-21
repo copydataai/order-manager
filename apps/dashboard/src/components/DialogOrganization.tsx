@@ -43,7 +43,7 @@ export function DialogOrganization() {
     },
   });
 
-  const mutation = api.organization.create.useMutation({
+  const mutation = api.organization.createAndAdminUserByDefault.useMutation({
     onSuccess: (data) => {
       console.log("data", data);
     },
