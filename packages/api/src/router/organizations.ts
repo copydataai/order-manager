@@ -72,6 +72,42 @@ export const organizationRouter = {
             });
             return data;
         }),
+    createAndAdminUserByDefault: protectedProcedure
+        .input(
+            z.object({
+                name: z.string(),
+                location: z.string(),
+                contactInfo: z.string(),
+            }),
+        )
+        .mutation(async ({ input, ctx }) => {
+            const { name, location, contactInfo } = input;
+            const { user } = ctx;
+
+            const organization = await ctx.db
+                .insert(schema.organization)
+                .values({
+                    name,
+                    location,
+                    contactInfo,
+                })
+                .returning();
+
+            const adminRole = await ctx.db
+                .select()
+                .from(schema.roles)
+                .where(eq(schema.roles.name, "admin"));
+
+            const organizationUsers = await ctx.db
+                .insert(schema.organizationUsers)
+                .values({
+                    organizationId: organization[0].organizationId,
+                    roleId: adminRole[0].roleId,
+                    userId: user.id,
+                });
+
+            return organization[0];
+        }),
     listByName: publicProcedure
         .input(z.object({ name: z.string() }))
         .query(({ input, ctx }) => {
