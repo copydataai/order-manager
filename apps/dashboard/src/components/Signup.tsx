@@ -40,7 +40,7 @@ export function Signup() {
     onSuccess: async (data) => {
       console.log("It's okay");
       console.log(data);
-      redirectAuth();
+      await redirectAuth();
     },
     onError: (error) => {
       console.error("It's heaven");

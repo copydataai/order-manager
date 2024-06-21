@@ -39,7 +39,7 @@ export function Login() {
       console.log("It's okay");
       console.log(data);
       await setAuthSession(data.session); // Ensure this is awaited if it's a Promise
-      redirectHome();
+      await redirectHome();
     },
     onError: (error) => {
       console.error("It's heaven");
