@@ -15,6 +15,7 @@ import { Input } from "@order/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { redirectAuth } from "~/actions/redirect";
 import { api } from "~/trpc/react";
 
 const formSchema = z.object({
@@ -39,6 +40,7 @@ export function Signup() {
     onSuccess: async (data) => {
       console.log("It's okay");
       console.log(data);
+      redirectAuth();
     },
     onError: (error) => {
       console.error("It's heaven");

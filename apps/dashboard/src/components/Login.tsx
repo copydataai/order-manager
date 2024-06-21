@@ -15,8 +15,9 @@ import { Input } from "@order/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { redirectHome } from "~/actions/redirect";
 import { api } from "~/trpc/react";
-import { getAuthSession, setAuthSession } from "~/utils/auth/cookies";
+import { setAuthSession } from "~/utils/auth/cookies";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -38,6 +39,7 @@ export function Login() {
       console.log("It's okay");
       console.log(data);
       await setAuthSession(data.session); // Ensure this is awaited if it's a Promise
+      redirectHome();
     },
     onError: (error) => {
       console.error("It's heaven");
