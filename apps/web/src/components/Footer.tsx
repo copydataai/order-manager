@@ -6,7 +6,7 @@ import { SocialLinks } from "~/config";
 
 export function Footer() {
   return (
-    <footer className="flex w-full flex-col items-center gap-4 px-4 py-6">
+    <footer className="flex w-full flex-col items-center gap-4 px-4 py-6 lg:mt-6">
       {/* top */}
       <div className="flex w-full justify-between gap-4 px-4 md:w-1/2">
         <div>
