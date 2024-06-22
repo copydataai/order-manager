@@ -1,9 +1,9 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { schema } from "@order/db";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 
-import { publicProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const productRouter = {
     create: publicProcedure
@@ -27,6 +27,26 @@ export const productRouter = {
                 organizationId,
             });
         }),
+    listAllByUserId: protectedProcedure.query(async ({ ctx }) => {
+        const userId = ctx.user.id;
+        const organizations = await ctx.db
+            .select({
+                organizationId: schema.organizationUsers.organizationId,
+            })
+            .from(schema.organizationUsers)
+            .where(eq(schema.organizationUsers.userId, userId));
+
+        console.log(organizations);
+        const organizationsIds = organizations.map((o) => o.organizationId);
+        console.log(organizationsIds);
+
+        const products = await ctx.db
+            .select()
+            .from(schema.product)
+            .where(inArray(schema.product.organizationId, organizationsIds));
+
+        return products;
+    }),
     // TODO: make query case no sesitive for products by name in a specific organization
     // listByNameAndOrganizationId: publicProcedure
     //     .input(z.object({ name: z.string(), organizationId: z.number() }))
