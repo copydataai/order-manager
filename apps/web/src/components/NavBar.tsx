@@ -3,10 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@order/ui/avatar";
 import { Button } from "@order/ui/button";
 
 import { Logo } from "~/components/Logo";
+import { SiteLinks } from "~/config";
 
 export function NavBar() {
   return (
-    <nav className="flex w-1/2 items-center justify-between px-4">
+    <nav className="flex w-full items-center justify-between px-4 md:w-1/2">
       <div>
         <Link href="/">
           <Logo className="h-16 w-16" />
@@ -19,7 +20,11 @@ export function NavBar() {
         </Link>
       </div>
 
-      <div className="flex space-x-3"></div>
+      <div className="flex space-x-3">
+        <Button className="rounded-full" asChild>
+          <Link href={SiteLinks.Dashboard}>Login</Link>
+        </Button>
+      </div>
     </nav>
   );
 }
