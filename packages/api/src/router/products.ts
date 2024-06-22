@@ -92,11 +92,13 @@ export const productRouter = {
             return data;
         }),
 
-    delete: publicProcedure
+    delete: protectedProcedure
         .input(z.object({ id: z.number() }))
         .mutation(async ({ input, ctx }) => {
             const { id } = input;
-            const data = await ctx.db.delete(schema.product).where({ id });
+            const data = await ctx.db
+                .delete(schema.product)
+                .where(eq(schema.product.productId, id));
 
             return data;
         }),
