@@ -112,7 +112,10 @@ export const organizationRouter = {
         .input(z.object({ name: z.string() }))
         .query(({ input, ctx }) => {
             const { name } = input;
-            return ctx.db.select().from(schema.organization).where({ name });
+            return ctx.db
+                .select()
+                .from(schema.organization)
+                .where(eq(schema.organization.name, name));
         }),
     listAll: protectedProcedure.query(({ ctx }) => {
         const userId = ctx.user.id;
