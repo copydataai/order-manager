@@ -7,12 +7,13 @@ import { api } from "~/trpc/server";
 
 export async function Hero() {
   return (
-    <section className="grip-2 flex justify-center space-x-2">
-      <h2 className="text-3xl font-black">Organizations</h2>
-      <DialogOrganization className="" />
-      <DialogRole />
-      <div className="flex w-1/2 flex-col items-center space-y-4 bg-[#F5F5F5]">
-        <div className="">
+    <section className="flex flex-col justify-center space-x-2 space-y-2">
+      <div className="flex items-center justify-center space-x-2 space-y-4">
+        <h2 className="text-3xl font-black tracking-tight">Organizations</h2>
+        <DialogOrganization className="" />
+      </div>
+      <div className="flex flex-col items-center justify-center space-y-4 bg-accent">
+        <div>
           <OrganizationList />
         </div>
         <div></div>
