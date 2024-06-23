@@ -101,8 +101,8 @@ export const organizationRouter = {
             const organizationUsers = await ctx.db
                 .insert(schema.organizationUsers)
                 .values({
-                    organizationId: organization[0].organizationId,
-                    roleId: adminRole[0].roleId,
+                    organizationId: organization[0]!.organizationId,
+                    roleId: adminRole[0]!.roleId,
                     userId: user.id,
                 });
 
