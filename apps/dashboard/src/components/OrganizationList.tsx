@@ -12,7 +12,9 @@ export function OrganizationList() {
     isLoading,
     isError,
     error,
-  } = api.organization.listAll.useQuery();
+  } = api.organization.listAll.useQuery({
+    retry: 1,
+  });
 
   if (isLoading) {
     return (
@@ -25,11 +27,13 @@ export function OrganizationList() {
   }
 
   if (isError) {
-    console.log("hell", isError, error.shape.message);
-    if (error.shape.message === "UNAUTHORIZED") {
-      console.log("hell", isError);
-      redirectAuth();
-    }
+    return (
+      <div className="flex w-full flex-col gap-4">
+        <div className="flex flex-col items-center justify-center ">
+          <p className="text-2xl font-bold ">{error.message}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
