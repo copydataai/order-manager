@@ -16,11 +16,11 @@ export function OrganizationCard(props: {
   return (
     <Card className="">
       <CardHeader>
-        <CardTitle>{organization.name}</CardTitle>
-        <CardDescription>{organization.location}</CardDescription>
+        <CardTitle>{organization.organizationName}</CardTitle>
+        <CardDescription>{organization.organizationLocation}</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>{organization.contactInfo}</p>
+        <p>{organization.organizationContactInfo}</p>
       </CardContent>
     </Card>
   );
