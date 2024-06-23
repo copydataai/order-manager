@@ -31,7 +31,13 @@ export const organizationRouter = {
         .query(async ({ input, ctx }) => {
             const { organizationId } = input;
             const usersRoles = await ctx.db
-                .select({ ...schema.roles, ...schema.user })
+                .select({
+                    roleId: schema.roles.roleId,
+                    roleName: schema.roles.name,
+                    userId: schema.user.id,
+                    userFirstName: schema.user.firstName,
+                    userLastName: schema.user.lastName,
+                })
                 .from(schema.organizationUsers)
                 .where(
                     eq(schema.organizationUsers.organizationId, organizationId),
@@ -120,7 +126,12 @@ export const organizationRouter = {
     listAll: protectedProcedure.query(({ ctx }) => {
         const userId = ctx.user.id;
         return ctx.db
-            .select(schema.organization)
+            .select({
+                organizationId: schema.organization.organizationId,
+                organizationName: schema.organization.name,
+                organizationLocation: schema.organization.location,
+                organizationContactInfo: schema.organization.contactInfo,
+            })
             .from(schema.organizationUsers)
             .where(eq(schema.organizationUsers.userId, userId))
             .innerJoin(
