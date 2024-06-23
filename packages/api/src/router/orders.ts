@@ -1,5 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { schema } from "@order/db";
+import { schema, schemaZod } from "@order/db";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
@@ -7,57 +7,43 @@ import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const orderRouter = {
     create: publicProcedure
-        .input(
-            z.object({
-                orderDate: z.date(),
-                customerName: z.string(),
-                // TODO add enum statusorder by db.schema
-                status: z.string(),
-                totalAmount: z.number(),
-                organizationId: z.number(),
-            }),
-        )
+        .input(schemaZod.createOrderSchema)
         .mutation(async ({ input, ctx }) => {
-            console.log(input);
             const {
-                customerName,
                 orderDate,
-                organizationId,
-                status,
-                totalAmount,
-            } = input;
-            const data = await ctx.db.insert(schema.order).values({
                 customerName,
-                orderDate: orderDate.toISOString(),
                 status,
                 totalAmount,
                 organizationId,
-            });
+            } = input;
+
+            const formattedInput = {
+                orderDate: orderDate.toISOString(), // Convert orderDate to string
+                customerName,
+                status, // Enum value, already correctly typed
+                totalAmount: totalAmount.toString(), // Convert totalAmount to string
+                organizationId,
+            };
+
+            const data = await ctx.db
+                .insert(schema.order)
+                .values(formattedInput);
             console.log(data);
 
             return data;
         }),
 
     createOrderDetail: publicProcedure
-        .input(
-            z.object({
-                productId: z.number(),
-                orderId: z.number(),
-                quantity: z.number(),
-                status: z.string(),
-                lineTotal: z.number(),
-            }),
-        )
+        .input(schemaZod.createOrderDetailSchema)
         .mutation(async ({ input, ctx }) => {
-            const { productId, orderId, status, quantity, lineTotal } = input;
+            const formattedInput = {
+                ...input,
+                lineTotal: input.lineTotal.toString(), // Convert lineTotal to string
+            };
 
-            const data = await ctx.db.insert(schema.orderdetails).values({
-                productId,
-                orderId,
-                status,
-                quantity,
-                lineTotal,
-            });
+            const data = await ctx.db
+                .insert(schema.orderdetails)
+                .values(formattedInput);
 
             return data;
         }),
@@ -66,19 +52,12 @@ export const orderRouter = {
         .input(
             z.object({
                 // TODO add enum statusorder by db.schema
-
                 orderDate: z.date(),
                 customerName: z.string(),
-                status: z.string(),
+                status: schemaZod.statusOrderSchema,
                 totalAmount: z.number(),
                 organizationId: z.number(),
-                orderDetails: z.array(
-                    z.object({
-                        quantity: z.number(),
-                        lineTotal: z.number(),
-                        productId: z.number(),
-                    }),
-                ),
+                orderDetails: z.array(schemaZod.createOrderDetailSchema),
             }),
         )
         .mutation(async ({ input, ctx }) => {
@@ -91,25 +70,28 @@ export const orderRouter = {
                 organizationId,
                 orderDetails,
             } = input;
+            const formattedInput = {
+                orderDate: orderDate.toISOString(), // Convert orderDate to string
+                customerName,
+                status,
+                totalAmount: totalAmount.toString(), // Convert totalAmount to string
+                organizationId,
+            };
+
             const order = await ctx.db
                 .insert(schema.order)
-                .values({
-                    orderDate: orderDate.toISOString(),
-                    customerName,
-                    status,
-                    totalAmount,
-                    organizationId,
-                })
+                .values(formattedInput)
                 .returning();
 
-            const orderId = order[0].orderId;
+            const orderId = order[0]!.orderId;
 
-            await ctx.db.insert(schema.orderdetails).values(
-                orderDetails.map((detail) => ({
-                    ...detail,
-                    orderId,
-                })),
-            );
+            const details = orderDetails.map((detail) => ({
+                ...detail,
+                orderId,
+                lineTotal: detail.lineTotal.toString(), // Convert lineTotal to string
+            }));
+
+            await ctx.db.insert(schema.orderdetails).values(details);
             return "thank you";
         }),
 

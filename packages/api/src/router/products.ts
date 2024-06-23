@@ -1,5 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { schema } from "@order/db";
+import { schema, schemaZod } from "@order/db";
 import { eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 
@@ -7,25 +7,15 @@ import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const productRouter = {
     create: publicProcedure
-        .input(
-            z.object({
-                name: z.string(),
-                description: z.string(),
-                price: z.number().or(z.string()).pipe(z.coerce.number()),
-                organizationId: z
-                    .number()
-                    .or(z.string())
-                    .pipe(z.coerce.number()),
-            }),
-        )
+        .input(schemaZod.createProductSchema)
         .mutation(async ({ input, ctx }) => {
-            const { name, description, price, organizationId } = input;
-            const data = await ctx.db.insert(schema.product).values({
-                name,
-                description,
-                price,
-                organizationId,
-            });
+            const formattedInput = {
+                ...input,
+                price: input.price.toString(),
+            };
+            const data = await ctx.db
+                .insert(schema.product)
+                .values(formattedInput);
         }),
     listAllByUserId: protectedProcedure.query(async ({ ctx }) => {
         const userId = ctx.user.id;
@@ -82,7 +72,7 @@ export const productRouter = {
                 .from(schema.organization)
                 .where(eq(schema.organization.name, name));
 
-            const { organizationId } = organization[0];
+            const { organizationId } = organization[0]!;
 
             const data = await ctx.db
                 .select()
