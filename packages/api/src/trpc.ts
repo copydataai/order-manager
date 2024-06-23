@@ -7,10 +7,12 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 
-import type { AuthSession, AuthUser } from "@supabase/supabase-js";
+import type { AuthUser, SupabaseClient } from "@supabase/supabase-js";
+import type { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { db } from "@order/db";
 import { initTRPC, TRPCError } from "@trpc/server";
+import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -30,7 +32,7 @@ import { CreateServerClient } from "./supabase";
  */
 interface InnerTRPCContext extends Partial<CreateNextContextOptions> {
     user: AuthUser | null;
-    auth: AuthSession | null;
+    auth: SupabaseClient | null;
 }
 
 /**
@@ -57,7 +59,7 @@ const createInnerTRPCContext = ({ user, auth }: InnerTRPCContext) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = async ({ req, res }) => {
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
     // TODO: extract JWT from req to refresh or save session
     const supabase = CreateServerClient();
     const cookiesStore = cookies();
@@ -67,7 +69,7 @@ export const createTRPCContext = async ({ req, res }) => {
     } = await supabase.auth.getUser(session?.value);
     return createInnerTRPCContext({
         user,
-        auth: supabase.auth,
+        auth: supabase,
     });
 };
 /**
