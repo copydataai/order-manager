@@ -38,6 +38,9 @@ importers:
       '@order/ui':
         specifier: workspace:^
         version: link:../../packages/ui
+      '@order/validators':
+        specifier: workspace:^
+        version: link:../../packages/validators
       '@supabase/ssr':
         specifier: ^0.3.0
         version: 0.3.0(@supabase/supabase-js@2.43.1)
@@ -436,6 +439,31 @@ importers:
       zod:
         specifier: ^3.23.6
         version: 3.23.6
+
+  packages/validators:
+    dependencies:
+      zod:
+        specifier: ^3.23.6
+        version: 3.23.6
+    devDependencies:
+      '@order/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@order/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@order/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      eslint:
+        specifier: ^9.2.0
+        version: 9.2.0
+      prettier:
+        specifier: ^3.2.5
+        version: 3.2.5
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
 
   tooling/eslint:
     dependencies:
