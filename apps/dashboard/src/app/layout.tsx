@@ -2,6 +2,7 @@ import "~/app/globals.css";
 
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { Toaster } from "@order/ui/sonner";
 import { ThemeProvider, ThemeToggle } from "@order/ui/theme";
 
 import { PHProvider } from "~/app/provider";
@@ -16,7 +17,7 @@ const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
 export const metadata: Metadata = {
   title: "Orders' Dashboard",
   description: "Manage your orders dashboard",
-  icons: [{ rel: "icon", url: "/vite.svg" }],
+  icons: [{ rel: "icon", url: "/orders-transformed.webp" }],
 };
 
 export default function RootLayout({
@@ -39,6 +40,7 @@ export default function RootLayout({
               <ThemeToggle />
             </div>
           </ThemeProvider>
+          <Toaster />
         </body>
       </PHProvider>
     </html>
