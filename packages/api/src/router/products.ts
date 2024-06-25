@@ -26,9 +26,10 @@ export const productRouter = {
             .from(schema.organizationUsers)
             .where(eq(schema.organizationUsers.userId, userId));
 
-        console.log(organizations);
+        // because inArray doesn't accept empty arrays
+        if (organizations.length === 0) return [];
+
         const organizationsIds = organizations.map((o) => o.organizationId);
-        console.log(organizationsIds);
 
         const products = await ctx.db
             .select()
