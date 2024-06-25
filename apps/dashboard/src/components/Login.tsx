@@ -1,6 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import type { SignIn } from "@order/validators";
 import { Button } from "@order/ui/button";
 import {
   Form,
@@ -12,46 +12,30 @@ import {
   FormMessage,
 } from "@order/ui/form";
 import { Input } from "@order/ui/input";
+import { SignInSchema } from "@order/validators";
+import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { redirectHome } from "~/actions/redirect";
+import { signInWithPassword } from "~/app/auth/actions";
 import { api } from "~/trpc/react";
-import { setAuthSession } from "~/utils/auth/cookies";
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(1, { message: "Please enter a password" }),
-});
 
 export function Login() {
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm({
+    schema: SignInSchema,
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const message = api.auth.login.useMutation({
-    onSuccess: async (data) => {
-      console.log("It's okay");
-      console.log(data);
-      await setAuthSession(data.session); // Ensure this is awaited if it's a Promise
-      await redirectHome();
-    },
-    onError: (error) => {
-      console.error("It's heaven");
-      console.error(error);
-    },
-  });
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    message.mutate(values);
-  }
+  const { execute, result, isExecuting } = useAction(signInWithPassword);
+
+  const onSubmit = (values: SignIn) => {
+    console.log("values", values);
+    execute(values);
+    console.log("result", result);
+  };
 
   return (
     <Form {...form}>
@@ -62,7 +46,12 @@ export function Login() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="pasta@email.com" {...field} />
+                <Input
+                  disabled={isExecuting}
+                  placeholder="Email address"
+                  type="email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,13 +63,20 @@ export function Login() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input
+                  disabled={isExecuting}
+                  placeholder="password"
+                  type="password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Login</Button>
+        <Button disabled={isExecuting} type="submit">
+          Login
+        </Button>
       </form>
     </Form>
   );
