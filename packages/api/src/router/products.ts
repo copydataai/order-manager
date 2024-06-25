@@ -6,7 +6,7 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const productRouter = {
-    create: publicProcedure
+    create: protectedProcedure
         .input(schemaZod.createProductSchema)
         .mutation(async ({ input, ctx }) => {
             const formattedInput = {
@@ -50,7 +50,7 @@ export const productRouter = {
     //         });
     //         return data;
     //     }),
-    listAllByOrganizationID: publicProcedure
+    listAllByOrganizationID: protectedProcedure
         .input(z.object({ organizationId: z.number() }))
         .query(async ({ input, ctx }) => {
             const { organizationId } = input;
@@ -63,7 +63,7 @@ export const productRouter = {
         }),
 
     // TODO: make query case no sesitive for products by name in a specific organization
-    listAllByOrganizationName: publicProcedure
+    listAllByOrganizationName: protectedProcedure
         .input(z.object({ name: z.string() }))
         .query(async ({ input, ctx }) => {
             const { name } = input;
