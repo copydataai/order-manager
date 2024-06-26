@@ -3,6 +3,16 @@
 import { Button } from "@order/ui/button";
 import { DataTable } from "@order/ui/data-table";
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@order/ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -14,6 +24,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
 import { DialogOrder } from "~/components/DialogOrders";
+import { OrderDetailsCard } from "~/components/OrderDetailsCard";
 import { api } from "~/trpc/react";
 
 type Order = {
@@ -48,26 +59,49 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const organization = row.original.organization;
+      const order = row.original;
+      const { data, isError, isLoading, error } =
+        api.order.listDetailsByOrderId.useQuery({
+          orderId: order.orderId,
+        });
 
+      if (isLoading) return <p>Loading...</p>;
+
+      if (isError) return <p>Error: {error?.message}</p>;
+
+      console.log(data, "data");
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            {/* TODO: add dialog or modal to edit specific order */}
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(organization.name)}
-            >
-              edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>show details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DialogTrigger asChild>
+                <DropdownMenuItem>
+                  <span>show details</span>
+                </DropdownMenuItem>
+              </DialogTrigger>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{order.customerName}</DialogTitle>
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+            <div>
+              {data.map((orderDetail) => (
+                <OrderDetailsCard orderDetail={orderDetail} />
+              ))}
+            </div>
+            <DialogFooter>
+              <Button type="submit">Confirm</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       );
     },
   },
