@@ -132,4 +132,14 @@ export const orderRouter = {
             );
         return orders;
     }),
+
+    listDetailsByOrderId: protectedProcedure
+        .input(z.object({ orderId: z.number() }))
+        .query(async ({ input, ctx }) => {
+            const orders = await ctx.db
+                .select()
+                .from(schema.orderdetails)
+                .where(eq(schema.orderdetails.orderId, input.orderId));
+            return orders;
+        }),
 };
