@@ -6,6 +6,18 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const productRouter = {
+    getProductById: publicProcedure
+        .input(z.object({ productId: z.string() }))
+        .query(async ({ input, ctx }) => {
+            const product = await ctx.db
+                .select()
+                .from(schema.product)
+                .where(eq(schema.product.productId, input.productId))
+                .limit(1);
+
+            return product[0]!;
+        }),
+
     create: protectedProcedure
         .input(schemaZod.createProductSchema)
         .mutation(async ({ input, ctx }) => {
