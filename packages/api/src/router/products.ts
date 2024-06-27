@@ -7,7 +7,7 @@ import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const productRouter = {
     getProductById: publicProcedure
-        .input(z.object({ productId: z.string() }))
+        .input(z.object({ productId: z.number() }))
         .query(async ({ input, ctx }) => {
             const product = await ctx.db
                 .select()
