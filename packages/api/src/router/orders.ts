@@ -118,6 +118,27 @@ export const orderRouter = {
 
             return orders;
         }),
+    // INFO: This list all the orders, orderdetails and product by organizationId
+    listAllOrdersDetailsProductsbyOrganizationId: publicProcedure
+        .input(z.object({ organizationId: z.number() }))
+        .query(async ({ input, ctx }) => {
+            const ordersDetailsProducts = await ctx.db
+                .select()
+                .from(schema.order)
+                .where(eq(schema.order.organizationId, input.organizationId))
+                .innerJoin(
+                    schema.orderdetails,
+                    eq(schema.order.orderId, schema.orderdetails.orderId),
+                )
+                .innerJoin(
+                    schema.product,
+                    eq(schema.product.productId, schema.orderdetails.productId),
+                );
+
+            console.log(ordersDetailsProducts);
+
+            return ordersDetailsProducts;
+        }),
     // TODO: add input by user and check which organization it belongs
     listAll: protectedProcedure.query(async ({ ctx }) => {
         const orders = await ctx.db
