@@ -37,39 +37,30 @@ type Order = {
 
 export const columns: ColumnDef<Order>[] = [
   {
-    accessorKey: "orderId",
+    accessorKey: "order.orderId",
     header: "Order ID",
   },
   {
-    accessorKey: "orderDate",
+    accessorKey: "order.orderDate",
     header: "Order Date",
   },
   {
-    accessorKey: "customerName",
+    accessorKey: "order.customerName",
     header: "Customer Name",
   },
   {
-    accessorKey: "status",
+    accessorKey: "order.status",
     header: "Status",
   },
   {
-    accessorKey: "totalAmount",
+    accessorKey: "order.totalAmount",
     header: "Total Amount",
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const order = row.original;
-      const { data, isError, isLoading, error } =
-        api.order.listDetailsAndProductByOrderId.useQuery({
-          orderId: order.orderId,
-        });
-
-      if (isLoading) return <p>Loading...</p>;
-
-      if (isError) return <p>Error: {error?.message}</p>;
-
-      console.log(data, "data");
+      console.log("order", order);
       return (
         <Dialog>
           <DropdownMenu>
@@ -89,17 +80,14 @@ export const columns: ColumnDef<Order>[] = [
           </DropdownMenu>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{order.customerName}</DialogTitle>
+              <DialogTitle>{order.order.customerName}</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div>
-              {data.map(({ orderdetail, product }, index) => (
-                <OrderDetailsCard
-                  key={index}
-                  orderDetail={orderdetail}
-                  product={product}
-                />
-              ))}
+              <OrderDetailsCard
+                orderDetail={order.orderdetails}
+                product={order.product}
+              />
             </div>
             <DialogFooter>
               <Button type="submit">Confirm</Button>
@@ -112,12 +100,10 @@ export const columns: ColumnDef<Order>[] = [
 ];
 
 export function OrdersTable({ organizationId }) {
-  // parsing from string to number, because nextjs just can read params as a string
-  console.log(organizationId, "organizationId");
-
-  const { data, isLoading } = api.order.listAllByOrganizationId.useQuery({
-    organizationId,
-  });
+  const { data, isLoading, isError, error } =
+    api.order.listAllOrdersDetailsProductsbyOrganizationId.useQuery({
+      organizationId,
+    });
 
   if (isLoading)
     return (
@@ -125,6 +111,14 @@ export function OrdersTable({ organizationId }) {
         <div>Loading...</div>
       </section>
     );
+
+  if (isError) {
+    return (
+      <section className="flex flex-col items-center justify-center gap-4 px-4 py-16">
+        <div>Error: {error.message}</div>
+      </section>
+    );
+  }
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 px-4 py-16">
