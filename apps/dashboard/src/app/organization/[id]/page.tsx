@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@order/ui/button";
 
 import { DialogProduct } from "~/components/DialogProduct";
+import { OrdersTable } from "~/components/OrdersTable";
 import { ProductList } from "~/components/ProductList";
 import { TeamMembersCard } from "~/components/TeamMembersCard";
 import { api } from "~/trpc/server";
@@ -31,6 +32,7 @@ export default async function OrganizationPage({
           <DialogProduct organizationId={id} />
         </div>
         <ProductList products={products} />
+        <OrdersTable organizationId={organizationId} />
         <TeamMembersCard organizationId={organizationId} />
       </section>
     </>
