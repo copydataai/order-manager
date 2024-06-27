@@ -23,7 +23,6 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
-import { DialogOrder } from "~/components/DialogOrders";
 import { OrderDetailsCard } from "~/components/OrderDetailsCard";
 import { api } from "~/trpc/react";
 
@@ -122,7 +121,6 @@ export function OrdersTable({ organizationId }) {
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 px-4 py-16">
-      <DialogOrder organizationId={organizationId} />
       <DataTable data={data} columns={columns} />
     </section>
   );
