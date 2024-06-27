@@ -61,7 +61,7 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => {
       const order = row.original;
       const { data, isError, isLoading, error } =
-        api.order.listDetailsByOrderId.useQuery({
+        api.order.listDetailsAndProductByOrderId.useQuery({
           orderId: order.orderId,
         });
 
@@ -93,8 +93,12 @@ export const columns: ColumnDef<Order>[] = [
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div>
-              {data.map((orderDetail) => (
-                <OrderDetailsCard orderDetail={orderDetail} />
+              {data.map(({ orderdetail, product }, index) => (
+                <OrderDetailsCard
+                  key={index}
+                  orderDetail={orderdetail}
+                  product={product}
+                />
               ))}
             </div>
             <DialogFooter>
