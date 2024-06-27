@@ -140,6 +140,23 @@ export const orderRouter = {
                 .select()
                 .from(schema.orderdetails)
                 .where(eq(schema.orderdetails.orderId, input.orderId));
+
+            return orders;
+        }),
+    listDetailsAndProductByOrderId: protectedProcedure
+        // INFO: make a query for orders and also retrieve product
+        .input(z.object({ orderId: z.number() }))
+        .query(async ({ input, ctx }) => {
+            const orders = await ctx.db
+                .select()
+                .from(schema.orderdetails)
+                .where(eq(schema.orderdetails.orderId, input.orderId))
+                .innerJoin(
+                    schema.product,
+                    eq(schema.orderdetails.productId, schema.product.productId),
+                );
+
+            console.log("orders", orders);
             return orders;
         }),
 };
