@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Button } from "@order/ui/button";
 
+import { DialogOrder } from "~/components/DialogOrders";
 import { DialogProduct } from "~/components/DialogProduct";
 import { OrdersTable } from "~/components/OrdersTable";
 import { ProductList } from "~/components/ProductList";
@@ -26,9 +26,7 @@ export default async function OrganizationPage({
     <>
       <section className="flex flex-col items-center justify-center gap-12 px-4 py-16">
         <div className="flex gap-4">
-          <Button asChild>
-            <Link href={ordersPath}>Create Order</Link>
-          </Button>
+          <DialogOrder organizationId={organizationId} />
           <DialogProduct organizationId={id} />
         </div>
         <ProductList products={products} />
