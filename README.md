@@ -59,6 +59,13 @@ before collapse the system and managing to the waiters.
     - Create a new organization that is different from the user or admin to manage the account
     
     
+## Brain
+
+- integrate a kind of OCR to read notes taken by the waiter
+- integrate notes field as text for in orderdetails
+- develop predictive models using orders, order details.
+- add new variables to the model as weather, events
+    
 
 ## License
 Licensed under the MIT License.
