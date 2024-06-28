@@ -5,6 +5,12 @@ import { z } from "zod";
 
 import { protectedProcedure, publicProcedure } from "../trpc";
 
+// TODO: Fix the types
+type Order = typeof schema.order.$inferSelect;
+type Orderdetail = typeof schema.orderdetails.$inferSelect;
+type Product = typeof schema.product.$inferSelect;
+type Organization = typeof schema.organization.$inferSelect;
+
 export const orderRouter = {
     create: publicProcedure
         .input(schemaZod.createOrderSchema)
@@ -122,10 +128,6 @@ export const orderRouter = {
                     schema.product,
                     eq(schema.product.productId, schema.orderdetails.productId),
                 );
-            // TODO: Fix the types
-            const Order = typeof schema.order.$inferSelect;
-            const Orderdetail = typeof schema.orderdetails.$inferSelect;
-            const Product = typeof schema.product.$inferSelect;
 
             const result = ordersDetailsProducts.reduce<
                 Record<
@@ -146,7 +148,7 @@ export const orderRouter = {
                     acc[order.orderId] = { order, orderdetails: [] };
                 }
                 if (orderdetail) {
-                    acc[order.orderId].orderdetails.push({
+                    acc[order.orderId]?.orderdetails.push({
                         orderdetail,
                         product,
                     });
@@ -177,12 +179,6 @@ export const orderRouter = {
                 eq(schema.product.productId, schema.orderdetails.productId),
             );
 
-        // TODO: Fix the types
-        const Order = typeof schema.order.$inferSelect;
-        const Orderdetail = typeof schema.orderdetails.$inferSelect;
-        const Product = typeof schema.product.$inferSelect;
-        const Organization = typeof schema.organization.$inferSelect;
-
         const result = orders.reduce<
             Record<
                 number,
@@ -204,7 +200,7 @@ export const orderRouter = {
                 acc[order.orderId] = { order, organization, orderdetails: [] };
             }
             if (orderdetail) {
-                acc[order.orderId].orderdetails.push({
+                acc[order.orderId]?.orderdetails.push({
                     orderdetail,
                     product,
                 });
