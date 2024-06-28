@@ -134,10 +134,39 @@ export const orderRouter = {
                     schema.product,
                     eq(schema.product.productId, schema.orderdetails.productId),
                 );
+            // TODO: Fix the types
+            const Order = typeof schema.order.$inferSelect;
+            const Orderdetail = typeof schema.orderdetails.$inferSelect;
+            const Product = typeof schema.product.$inferSelect;
 
-            console.log(ordersDetailsProducts);
+            const result = ordersDetailsProducts.reduce<
+                Record<
+                    number,
+                    {
+                        order: Order;
+                        orderdetails: {
+                            orderdetail: Orderdetail;
+                            product: Product;
+                        }[];
+                    }
+                >
+            >((acc, row) => {
+                const order = row.order;
+                const orderdetail = row.orderdetails;
+                const product = row.product;
+                if (!acc[order.orderId]) {
+                    acc[order.orderId] = { order, orderdetails: [] };
+                }
+                if (orderdetail) {
+                    acc[order.orderId].orderdetails.push({
+                        orderdetail,
+                        product,
+                    });
+                }
+                return acc;
+            }, {});
 
-            return ordersDetailsProducts;
+            return result;
         }),
     // TODO: add input by user and check which organization it belongs
     listAll: protectedProcedure.query(async ({ ctx }) => {
