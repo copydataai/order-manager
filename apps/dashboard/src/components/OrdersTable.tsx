@@ -120,7 +120,7 @@ export function OrdersTable({ organizationId }) {
   }
 
   return (
-    <section className="flex flex-col items-center justify-center gap-4 px-4 py-16">
+    <section className="flex w-full flex-col items-center justify-center gap-4 px-4 py-16 md:w-1/2">
       <DataTable data={data} columns={columns} />
     </section>
   );
