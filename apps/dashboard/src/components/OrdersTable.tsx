@@ -34,7 +34,30 @@ type Order = {
   totalAmount: number;
 };
 
-export const columns: ColumnDef<Order>[] = [
+type OrderDetail = {
+  orderId: number;
+  productId: number;
+  quantity: number;
+  orderDetailId: number;
+  lineTotal: number;
+};
+type Product = {
+  name: string;
+  description: string;
+  organizationId: number;
+  productId: number;
+  price: number;
+};
+type OrderDetailsProduct = {
+  [orderId: number]: {
+    order: Order;
+    orderdetails: {
+      OrderDetail: OrderDetail;
+      Product: Product;
+    };
+  };
+};
+export const columns: ColumnDef<OrderDetailsProduct>[] = [
   {
     accessorKey: "order.orderId",
     header: "Order ID",
@@ -59,7 +82,7 @@ export const columns: ColumnDef<Order>[] = [
     id: "actions",
     cell: ({ row }) => {
       const order = row.original;
-      console.log("order", order);
+      const details = order.orderdetails;
       return (
         <Dialog>
           <DropdownMenu>
@@ -83,10 +106,12 @@ export const columns: ColumnDef<Order>[] = [
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div>
-              <OrderDetailsCard
-                orderDetail={order.orderdetails}
-                product={order.product}
-              />
+              {details.map((orderDetail) => (
+                <OrderDetailsCard
+                  orderDetail={orderDetail.orderdetail}
+                  product={orderDetail.product}
+                />
+              ))}
             </div>
             <DialogFooter>
               <Button type="submit">Confirm</Button>
@@ -121,7 +146,7 @@ export function OrdersTable({ organizationId }) {
 
   return (
     <section className="flex w-full flex-col items-center justify-center gap-4 px-4 py-16 md:w-1/2">
-      <DataTable data={data} columns={columns} />
+      <DataTable data={Object.values(data)} columns={columns} />
     </section>
   );
 }
