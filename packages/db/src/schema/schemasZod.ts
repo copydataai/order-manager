@@ -27,6 +27,15 @@ export const createOrderDetailSchema = createInsertSchema(orderdetails, {
     orderDetailId: true,
     //TODO: add created_at, updated_at
 });
+export const createOrderDetailsSchema = createInsertSchema(orderdetails, {
+    productId: z.number(),
+    quantity: z.number(),
+    lineTotal: z.number(),
+}).omit({
+    orderDetailId: true,
+    orderId: true,
+    //TODO: add created_at, updated_at
+});
 
 export const createProductSchema = createInsertSchema(product, {
     name: z.string(),
