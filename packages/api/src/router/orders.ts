@@ -173,14 +173,58 @@ export const orderRouter = {
         const orders = await ctx.db
             .select()
             .from(schema.order)
-            .leftJoin(
+            .innerJoin(
                 schema.organization,
                 eq(
                     schema.order.organizationId,
                     schema.organization.organizationId,
                 ),
+            )
+            .innerJoin(
+                schema.orderdetails,
+                eq(schema.order.orderId, schema.orderdetails.orderId),
+            )
+            .innerJoin(
+                schema.product,
+                eq(schema.product.productId, schema.orderdetails.productId),
             );
-        return orders;
+
+        // TODO: Fix the types
+        const Order = typeof schema.order.$inferSelect;
+        const Orderdetail = typeof schema.orderdetails.$inferSelect;
+        const Product = typeof schema.product.$inferSelect;
+        const Organization = typeof schema.organization.$inferSelect;
+
+        const result = orders.reduce<
+            Record<
+                number,
+                {
+                    organization: Organization;
+                    order: Order;
+                    orderdetails: {
+                        orderdetail: Orderdetail;
+                        product: Product;
+                    }[];
+                }
+            >
+        >((acc, row) => {
+            const order = row.order;
+            const organization = row.organization;
+            const orderdetail = row.orderdetails;
+            const product = row.product;
+            if (!acc[order.orderId]) {
+                acc[order.orderId] = { order, organization, orderdetails: [] };
+            }
+            if (orderdetail) {
+                acc[order.orderId].orderdetails.push({
+                    orderdetail,
+                    product,
+                });
+            }
+            return acc;
+        }, {});
+
+        return result;
     }),
 
     listDetailsByOrderId: protectedProcedure
