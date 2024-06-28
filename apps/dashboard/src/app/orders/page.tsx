@@ -13,7 +13,6 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
-import { redirectAuth } from "~/actions/redirect";
 import { api } from "~/trpc/react";
 
 type Organization = {
@@ -31,12 +30,30 @@ type Order = {
   totalAmount: number;
 };
 
-type ColumnOrganizationOrder = {
-  order: Order;
-  organization: Organization;
+type OrderDetail = {
+  orderId: number;
+  productId: number;
+  quantity: number;
+  orderDetailId: number;
+  lineTotal: number;
 };
-
-export const columns: ColumnDef<ColumnOrganizationOrder>[] = [
+type Product = {
+  name: string;
+  description: string;
+  organizationId: number;
+  productId: number;
+  price: number;
+};
+type OrderDetailsProduct = {
+  [orderId: number]: {
+    order: Order;
+    orderdetails: {
+      OrderDetail: OrderDetail;
+      Product: Product;
+    };
+  };
+};
+export const columns: ColumnDef<OrderDetailsProduct>[] = [
   {
     accessorKey: "order.orderId",
     header: "Order ID",
@@ -92,12 +109,6 @@ export const columns: ColumnDef<ColumnOrganizationOrder>[] = [
 export default function OrdersPage() {
   const { data = [], isLoading, isError, error } = api.order.listAll.useQuery(); // Default to an empty array
 
-  if (isError) {
-    if (error.shape.message === "UNAUTHORIZED") {
-      redirectAuth();
-    }
-  }
-
   if (isLoading)
     return (
       <section className="flex items-center justify-center">
@@ -105,10 +116,11 @@ export default function OrdersPage() {
         <div>Loading...</div>
       </section>
     );
+  console.log(data);
 
   return (
     <section className="container">
-      <DataTable data={data} columns={columns} />
+      <DataTable data={Object.values(data)} columns={columns} />
     </section>
   );
 }
