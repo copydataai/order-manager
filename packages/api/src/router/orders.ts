@@ -57,11 +57,10 @@ export const orderRouter = {
                 status: schemaZod.statusOrderSchema,
                 totalAmount: z.number(),
                 organizationId: z.number(),
-                orderDetails: z.array(schemaZod.createOrderDetailSchema),
+                orderDetails: z.array(schemaZod.createOrderDetailsSchema),
             }),
         )
         .mutation(async ({ input, ctx }) => {
-            console.log(input);
             const {
                 orderDate,
                 customerName,
