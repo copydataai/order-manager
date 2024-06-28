@@ -69,7 +69,7 @@ export function DialogOrder(props: { organizationId: number }) {
       status: "ORDERED",
       totalAmount: 0.0,
       orderDate: new Date(),
-      organizationId: 5,
+      organizationId: organizationId,
       orderDetails: [], // Initialize orderDetails as an empty array
     },
   });
