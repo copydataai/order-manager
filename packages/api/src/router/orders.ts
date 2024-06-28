@@ -94,17 +94,6 @@ export const orderRouter = {
             return "thank you";
         }),
 
-    listDetailsByOrderId: publicProcedure
-        .input(z.object({ orderId: z.number() }))
-        .query(async ({ input, ctx }) => {
-            const { orderId } = input;
-            console.log(orderId);
-            const orderDetails = await ctx.db
-                .select()
-                .from(schema.orderdetails)
-                .where(eq(schema.orderdetails.orderId, orderId));
-            return orderDetails;
-        }),
     listAllByOrganizationId: publicProcedure //
         .input(z.object({ organizationId: z.number() }))
         .query(async ({ input, ctx }) => {
