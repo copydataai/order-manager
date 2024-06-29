@@ -103,22 +103,6 @@ export const user = pgTable(
 	},
 );
 
-export const waitlist = pgTable(
-	"waitlist",
-	{
-		id: serial("id").primaryKey().notNull(),
-		email: varchar("email", { length: 255 }).notNull(),
-		createdAt: timestamp("created_at", { mode: "string" })
-			.defaultNow()
-			.notNull(),
-	},
-	(table) => {
-		return {
-			waitlistEmailUnique: unique("waitlist_email_unique").on(table.email),
-		};
-	},
-);
-
 export const orderdetails = pgTable("orderdetails", {
 	orderDetailId: serial("order_detail_id").primaryKey().notNull(),
 	orderId: integer("order_id")
@@ -129,10 +113,6 @@ export const orderdetails = pgTable("orderdetails", {
 		.references(() => product.productId),
 	quantity: integer("quantity").notNull(),
 	lineTotal: numeric("line_total").notNull(),
-});
-
-export const alembicVersion = pgTable("alembic_version", {
-	versionNum: varchar("version_num", { length: 32 }).primaryKey().notNull(),
 });
 
 export const order = pgTable(
