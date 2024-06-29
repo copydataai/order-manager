@@ -40,6 +40,7 @@ import {
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { api } from "~/trpc/react";
@@ -76,19 +77,18 @@ export function DialogOrder(props: { organizationId: number }) {
 
   const mutation = api.order.createOrderAndOrderDetails.useMutation({
     onSuccess: (data) => {
-      console.log("Order created successfully:", data);
+      toast.success("Order created", {
+        description: "Your order has been created successfully.",
+      });
     },
     onError: (error) => {
-      console.log("Failed to create order:", error);
+      toast.error("Error creating order", {
+        description: error.message,
+      });
     },
   });
 
   const handleSubmit = form.handleSubmit(async (values) => {
-    console.log(form);
-    if (typeof values.orderDate === "string") {
-      values.orderDate = new Date(values.orderDate);
-    }
-
     await mutation.mutate(values);
   });
 
@@ -117,9 +117,7 @@ export function DialogOrder(props: { organizationId: number }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button onClick={() => console.log("Create Order button clicked")}>
-          Create Order
-        </Button>
+        <Button>Create Order</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -128,12 +126,7 @@ export function DialogOrder(props: { organizationId: number }) {
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              console.log("form", form.getValues());
-              console.log("form", form);
-              handleSubmit(e);
-            }}
+            onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-3"
           >
             <FormField
@@ -252,7 +245,9 @@ export function DialogOrder(props: { organizationId: number }) {
               </Button>
             </div>
             <DialogFooter className="sm:justify-start">
-              <Button type="submit">Save changes</Button>
+              <DialogClose asChild>
+                <Button type="submit">Save changes</Button>
+              </DialogClose>
             </DialogFooter>
           </form>
         </Form>
