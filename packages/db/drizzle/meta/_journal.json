@@ -4,16 +4,16 @@
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1715183174968,
-      "tag": "0000_conscious_meltdown",
+      "version": "7",
+      "when": 1719647692440,
+      "tag": "0000_lonely_storm",
       "breakpoints": true
     },
     {
       "idx": 1,
-      "version": "5",
-      "when": 1715245997024,
-      "tag": "0001_aspiring_prima",
+      "version": "7",
+      "when": 1719648270745,
+      "tag": "0001_nice_starbolt",
       "breakpoints": true
     }
   ]
