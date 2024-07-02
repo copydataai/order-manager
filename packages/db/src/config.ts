@@ -23,7 +23,6 @@ connectionStr.password = env.DB_PASSWORD;
 
 export default {
     schema: ["./src/schema/*"],
-    driver: "pg",
     dialect: "postgresql",
     dbCredentials: { url: connectionStr.href },
     out: "./drizzle",
