@@ -17,7 +17,7 @@ import { Logo } from "~/components/Logo";
 
 export function NavBar() {
   return (
-    <nav className="flex w-1/2 items-center justify-between px-4">
+    <nav className="flex w-full items-center justify-between px-4 md:w-1/2">
       <div>
         <Logo className="h-16 w-16" />
       </div>
