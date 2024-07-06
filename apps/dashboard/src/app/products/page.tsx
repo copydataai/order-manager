@@ -18,8 +18,8 @@ export default function ProductsPage() {
     );
 
   return (
-    <section className="container mx-auto px-4 py-8">
-      <div className="auto-cols-2 grid h-1/2 w-full grid-flow-col gap-4">
+    <section className="container flex flex-col items-center justify-center px-4 py-8">
+      <div className="grid w-full grid-cols-2 items-center justify-center gap-4 px-4 py-16 md:w-1/2 md:grid-cols-4">
         {data.map((product) => (
           <ProductCard key={product.produtId} product={product} />
         ))}
