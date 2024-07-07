@@ -19,7 +19,9 @@ export function NavBar() {
   return (
     <nav className="flex w-full items-center justify-between px-4 md:w-1/2">
       <div>
-        <Logo className="h-16 w-16" />
+        <Link href="/">
+          <Logo className="h-16 w-16" />
+        </Link>
       </div>
 
       <NavigationMenu>
