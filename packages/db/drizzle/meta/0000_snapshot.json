@@ -88,43 +88,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.waitlist": {
-      "name": "waitlist",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "waitlist_email_unique": {
-          "columns": [
-            "email"
-          ],
-          "nullsNotDistinct": false,
-          "name": "waitlist_email_unique"
-        }
-      }
-    },
     "public.orderdetails": {
       "name": "orderdetails",
       "schema": "",
@@ -191,22 +154,6 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.alembic_version": {
-      "name": "alembic_version",
-      "schema": "",
-      "columns": {
-        "version_num": {
-          "name": "version_num",
-          "type": "varchar(32)",
-          "primaryKey": true,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -500,8 +447,8 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "organization_users_organization_id_fkey": {
-          "name": "organization_users_organization_id_fkey",
+        "organization_users_organization_id_organization_organization_id": {
+          "name": "organization_users_organization_id_organization_organization_id",
           "tableFrom": "organization_users",
           "tableTo": "organization",
           "schemaTo": "public",
@@ -514,8 +461,8 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "organization_users_role_id_fkey": {
-          "name": "organization_users_role_id_fkey",
+        "organization_users_role_id_roles_role_id_fk": {
+          "name": "organization_users_role_id_roles_role_id_fk",
           "tableFrom": "organization_users",
           "tableTo": "roles",
           "schemaTo": "public",
@@ -528,8 +475,8 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "organization_users_user_id_fkey": {
-          "name": "organization_users_user_id_fkey",
+        "organization_users_user_id_user_id_fk": {
+          "name": "organization_users_user_id_user_id_fk",
           "tableFrom": "organization_users",
           "tableTo": "user",
           "schemaTo": "public",
@@ -636,6 +583,111 @@
         "stream_xchacha20"
       ],
       "schema": "pgsodium"
+    },
+    "public.aal_level": {
+      "name": "aal_level",
+      "values": [
+        "aal1",
+        "aal2",
+        "aal3"
+      ],
+      "schema": "public"
+    },
+    "public.action": {
+      "name": "action",
+      "values": [
+        "INSERT",
+        "UPDATE",
+        "DELETE",
+        "TRUNCATE",
+        "ERROR"
+      ],
+      "schema": "public"
+    },
+    "public.code_challenge_method": {
+      "name": "code_challenge_method",
+      "values": [
+        "s256",
+        "plain"
+      ],
+      "schema": "public"
+    },
+    "public.equality_op": {
+      "name": "equality_op",
+      "values": [
+        "eq",
+        "neq",
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "in"
+      ],
+      "schema": "public"
+    },
+    "public.factor_status": {
+      "name": "factor_status",
+      "values": [
+        "unverified",
+        "verified"
+      ],
+      "schema": "public"
+    },
+    "public.factor_type": {
+      "name": "factor_type",
+      "values": [
+        "totp",
+        "webauthn"
+      ],
+      "schema": "public"
+    },
+    "public.key_status": {
+      "name": "key_status",
+      "values": [
+        "default",
+        "valid",
+        "invalid",
+        "expired"
+      ],
+      "schema": "public"
+    },
+    "public.key_type": {
+      "name": "key_type",
+      "values": [
+        "aead-ietf",
+        "aead-det",
+        "hmacsha512",
+        "hmacsha256",
+        "auth",
+        "shorthash",
+        "generichash",
+        "kdf",
+        "secretbox",
+        "secretstream",
+        "stream_xchacha20"
+      ],
+      "schema": "public"
+    },
+    "public.one_time_token_type": {
+      "name": "one_time_token_type",
+      "values": [
+        "confirmation_token",
+        "reauthentication_token",
+        "recovery_token",
+        "email_change_token_new",
+        "email_change_token_current",
+        "phone_change_token"
+      ],
+      "schema": "public"
+    },
+    "public.request_status": {
+      "name": "request_status",
+      "values": [
+        "PENDING",
+        "SUCCESS",
+        "ERROR"
+      ],
+      "schema": "public"
     },
     "public.statusorder": {
       "name": "statusorder",

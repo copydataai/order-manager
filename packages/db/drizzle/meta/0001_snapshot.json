@@ -1,5 +1,5 @@
 {
-  "id": "4d7f132f-cee2-4f04-b960-44649b6a2991",
+  "id": "c81c2e06-b3e6-4134-bd64-737ffe87ce12",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -376,6 +376,12 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "organization_id": {
           "name": "organization_id",
