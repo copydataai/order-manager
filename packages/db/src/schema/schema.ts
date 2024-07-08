@@ -8,6 +8,7 @@ import {
 	pgTable,
 	primaryKey,
 	serial,
+	text,
 	timestamp,
 	uuid,
 	varchar,
@@ -108,6 +109,7 @@ export const product = pgTable("product", {
 	name: varchar("name").notNull(),
 	description: varchar("description").notNull(),
 	price: numeric("price").notNull(),
+	imageUrl: text("image_url"),
 	organizationId: integer("organization_id").references(
 		() => organization.organizationId,
 	),
