@@ -63,8 +63,10 @@ export const columns: ColumnDef<OrderDetailsProduct>[] = [
     header: "Order ID",
   },
   {
-    accessorKey: "order.orderDate",
     header: "Order Date",
+    accessorFn: ({ order }) => {
+      return new Date(order.orderDate).toDateString();
+    },
   },
   {
     accessorKey: "order.customerName",
