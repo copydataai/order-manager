@@ -26,4 +26,8 @@ export default {
     dialect: "postgresql",
     dbCredentials: { url: connectionStr.href },
     out: "./drizzle",
+    introspect: {
+        casing: "camel",
+    },
+    verbose: true,
 } satisfies Config;
