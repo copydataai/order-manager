@@ -18,8 +18,8 @@ export function ProductCard(props: {
   console.log(product);
   return (
     <Card>
-      <CardContent>
-        <div className="mt-2 flex w-full items-center justify-center rounded-md border">
+      <CardContent className="flex flex-1 flex-col items-center justify-center gap-2">
+        <div className="mt-2 flex w-1/3 items-center justify-center rounded-md border">
           <img src="/orders.webp" alt="orders-logo" />
         </div>
         <div>
