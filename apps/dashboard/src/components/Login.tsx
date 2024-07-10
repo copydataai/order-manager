@@ -32,9 +32,7 @@ export function Login() {
   const { execute, result, isExecuting } = useAction(signInWithPassword);
 
   const onSubmit = (values: SignIn) => {
-    console.log("values", values);
     execute(values);
-    console.log("result", result);
   };
 
   return (
