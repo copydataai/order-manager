@@ -17,7 +17,7 @@
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "db:generate": "pnpm with-env drizzle-kit generate --config src/config.ts",
-    "db:migration": "pnpm with-env drizzle-kit migrate --config src/config.ts",
+    "db:migrate": "pnpm with-env drizzle-kit migrate --config src/config.ts",
     "studio": "pnpm with-env drizzle-kit studio --config src/config.ts",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
