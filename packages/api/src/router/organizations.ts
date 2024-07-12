@@ -50,13 +50,12 @@ export const organizationRouter = {
                     schema.user,
                     eq(schema.user.id, schema.organizationUsers.userId),
                 );
-            console.log(usersRoles);
 
             // return {users, roles};
             return usersRoles;
         }),
 
-    create: publicProcedure
+    create: protectedProcedure
         .input(
             z.object({
                 name: z.string(),
@@ -66,11 +65,6 @@ export const organizationRouter = {
         )
         .mutation(async ({ input, ctx }) => {
             const { name, location, contactInfo } = input;
-            const { user } = ctx;
-            if (!user) {
-                console.log("no auth");
-            }
-            console.log(input);
             const data = await ctx.db.insert(schema.organization).values({
                 name,
                 location,
