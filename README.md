@@ -4,6 +4,9 @@
 As a chef with high level of orders, we tend to confuse what is the priority for that moment, and what would be the next order.
 before collapse the system and managing to the waiters.
 
+
+## Create a supervisorOS
+
 ## TODO
 - [ ] Create an API to manager and chef roles
 - [ ] chef role can read orders and see if its done
