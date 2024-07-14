@@ -23,6 +23,7 @@ import {
 } from "@order/ui/form";
 import { Input } from "@order/ui/input";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { api } from "~/trpc/react";
@@ -45,10 +46,14 @@ export function DialogOrganization() {
 
   const mutation = api.organization.createAndAdminUserByDefault.useMutation({
     onSuccess: (data) => {
-      console.log("data", data);
+      taost.success("Organization created", {
+        description: `${data.organization.name} organization created with admin user ${data.user.name}`,
+      });
     },
     onError: (error) => {
-      console.log("error", error);
+      toast.error("Error creating organization", {
+        description: error.message,
+      });
     },
   });
 
