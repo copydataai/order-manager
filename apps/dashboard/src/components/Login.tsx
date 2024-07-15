@@ -15,6 +15,7 @@ import { Input } from "@order/ui/input";
 import { SignInSchema } from "@order/validators";
 import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { signInWithPassword } from "~/app/auth/actions";
 import { api } from "~/trpc/react";
@@ -29,7 +30,13 @@ export function Login() {
     },
   });
 
-  const { execute, result, isExecuting } = useAction(signInWithPassword);
+  const { execute, isExecuting } = useAction(signInWithPassword, {
+    onError: ({ error, input }) => {
+      toast.error("Error", {
+        description: "Invalid credentials",
+      });
+    },
+  });
 
   const onSubmit = (values: SignIn) => {
     execute(values);
