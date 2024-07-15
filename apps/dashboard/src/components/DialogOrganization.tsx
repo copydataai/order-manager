@@ -46,7 +46,7 @@ export function DialogOrganization() {
 
   const mutation = api.organization.createAndAdminUserByDefault.useMutation({
     onSuccess: (data) => {
-      taost.success("Organization created", {
+      toast.success("Organization created", {
         description: `${data.organization.name} organization created with admin user ${data.user.name}`,
       });
     },
