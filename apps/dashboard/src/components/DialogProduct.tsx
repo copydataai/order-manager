@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@order/ui/button";
 import {
   Dialog,
@@ -22,24 +21,17 @@ import {
   FormMessage,
 } from "@order/ui/form";
 import { Input } from "@order/ui/input";
+import { ProductCreate, ProductCreateSchema } from "@order/validators";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { api } from "~/trpc/react";
-
-const productSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
-  description: z.string().min(1, { message: "Description is required" }),
-  price: z.number().or(z.string()).pipe(z.coerce.number()),
-  organizationId: z.number().or(z.string()).pipe(z.coerce.number()),
-});
 
 export function DialogProduct(props: { organizationId: number }) {
   const organizationId = parseInt(props.organizationId);
 
-  const form = useForm<z.infer<typeof productSchema>>({
-    resolver: zodResolver(productSchema),
+  const form = useForm({
+    schema: ProductCreateSchema,
     defaultValues: {
       name: "",
       description: "",
@@ -57,9 +49,7 @@ export function DialogProduct(props: { organizationId: number }) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  function onSubmit(values: ProductCreate) {
     mutation.mutate(values);
   }
 
