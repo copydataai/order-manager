@@ -1,7 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { schema } from "@order/db";
 import { cn } from "@order/ui";
 import { Button } from "@order/ui/button";
 import { Calendar } from "@order/ui/calendar";
@@ -37,34 +35,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@order/ui/select";
+import {
+  OrderCreate,
+  OrderCreateSchema,
+  OrderDetailCreate,
+  OrderDetailCreateSchema,
+} from "@order/validators";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { api } from "~/trpc/react";
-import { OrderDetailsPopover } from "./PopoverOrderDetails"; // Ensure correct path
-
-const orderDetailsSchema = z.object({
-  productId: z.number(),
-  quantity: z.number().or(z.string()).pipe(z.coerce.number()),
-  lineTotal: z.number().or(z.string()).pipe(z.coerce.number()),
-});
-
-const orderSchema = z.object({
-  customerName: z.string().min(1, { message: "Customer name is required" }),
-  orderDate: z.date().or(z.string()).optional(),
-  status: z.enum(["FINISHED", "CANCELLED", "ORDERED"]),
-  orderDetails: z.array(orderDetailsSchema),
-  totalAmount: z.number().or(z.string()).pipe(z.coerce.number()),
-  organizationId: z.number().or(z.string()).pipe(z.coerce.number()).optional(),
-});
+import { OrderDetailsPopover } from "./PopoverOrderDetails";
 
 export function DialogOrder(props: { organizationId: number }) {
   const { organizationId } = props;
-  const form = useForm<z.infer<typeof orderSchema>>({
-    resolver: zodResolver(orderSchema),
+  const form = useForm({
+    schema: OrderCreateSchema,
     defaultValues: {
       customerName: "",
       status: "ORDERED",
@@ -92,7 +80,7 @@ export function DialogOrder(props: { organizationId: number }) {
     await mutation.mutate(values);
   });
 
-  const calculateTotalAmount = (orderDetails: orderDetailsSchema[]) => {
+  const calculateTotalAmount = (orderDetails: OrderDetailCreate[]) => {
     return orderDetails.reduce((total, detail) => total + detail.lineTotal, 0);
   };
 
