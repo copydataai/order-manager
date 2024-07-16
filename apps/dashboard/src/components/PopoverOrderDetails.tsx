@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@order/ui/button";
 import {
   Collapsible,
@@ -24,17 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@order/ui/select";
+import { OrderDetailCreate, OrderDetailCreateSchema } from "@order/validators";
 import { ChevronsUpDown, Plus, X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { api } from "~/trpc/react";
-
-const orderDetailsSchema = z.object({
-  productId: z.number(),
-  quantity: z.number().or(z.string()).pipe(z.coerce.number()),
-  lineTotal: z.number().or(z.string()).pipe(z.coerce.number()),
-});
 
 export function OrderDetailsPopover({
   orderDetail,
@@ -45,7 +38,7 @@ export function OrderDetailsPopover({
   const [isOpen, setIsOpen] = useState(false);
   const counter = index + 1;
   const form = useForm({
-    resolver: zodResolver(orderDetailsSchema),
+    schema: OrderDetailCreateSchema,
     defaultValues: orderDetail,
   });
 
