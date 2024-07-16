@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@order/ui/button";
 import {
   Dialog,
@@ -22,21 +21,18 @@ import {
   FormMessage,
 } from "@order/ui/form";
 import { Input } from "@order/ui/input";
+import {
+  OrganizationCreate,
+  OrganizationCreateSchema,
+} from "@order/validators";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { api } from "~/trpc/react";
 
-const organizationSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
-  location: z.string().min(1, { message: "Location is required" }),
-  contactInfo: z.string().min(1, { message: "Contact Info is required" }),
-});
-
 export function DialogOrganization() {
-  const form = useForm<z.infer<typeof organizationSchema>>({
-    resolver: zodResolver(organizationSchema),
+  const form = useForm({
+    schema: OrganizationCreateSchema,
     defaultValues: {
       name: "",
       location: "",
@@ -57,10 +53,7 @@ export function DialogOrganization() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: OrganizationCreate) {
     await mutation.mutate(values);
   }
 
