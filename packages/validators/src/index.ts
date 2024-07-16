@@ -22,3 +22,13 @@ export const SignUpSchema = z.object({
   }),
 });
 export type SignUp = z.infer<typeof SignUpSchema>;
+
+// product
+export const ProductCreateSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  description: z.string().min(1, { message: "Description is required" }),
+  price: z.number().or(z.string()).pipe(z.coerce.number()),
+  organizationId: z.number().or(z.string()).pipe(z.coerce.number()),
+});
+
+export type ProductCreate = z.infer<typeof ProductCreateSchema>;
