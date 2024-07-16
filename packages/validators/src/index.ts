@@ -41,3 +41,23 @@ export const OrganizationCreateSchema = z.object({
 });
 
 export const OrganizationCreate = z.infer<typeof OrganizationCreateSchema>;
+
+// Orders
+export const OrderDetailCreateSchema = z.object({
+  productId: z.number().or(z.string()).pipe(z.coerce.number()),
+  quantity: z.number().or(z.string()).pipe(z.coerce.number()),
+  lineTotal: z.number().or(z.string()).pipe(z.coerce.number()),
+});
+
+export type OrderDetailCreate = z.infer<typeof OrderDetailCreateSchema>;
+
+export const OrderCreateSchema = z.object({
+  customerName: z.string().min(1, { message: "Customer name is required" }),
+  orderDate: z.date().or(z.string()).optional(),
+  status: z.enum(["FINISHED", "CANCELLED", "ORDERED"]),
+  orderDetails: z.array(OrderDetailCreateSchema),
+  totalAmount: z.number().or(z.string()).pipe(z.coerce.number()),
+  organizationId: z.number().or(z.string()).pipe(z.coerce.number()),
+});
+
+export type OrderCreate = z.infer<typeof OrderCreateSchema>;
