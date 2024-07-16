@@ -32,3 +32,12 @@ export const ProductCreateSchema = z.object({
 });
 
 export type ProductCreate = z.infer<typeof ProductCreateSchema>;
+
+// organization
+export const OrganizationCreateSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  location: z.string().min(1, { message: "Location is required" }),
+  contactInfo: z.string().min(1, { message: "Contact Info is required" }),
+});
+
+export const OrganizationCreate = z.infer<typeof OrganizationCreateSchema>;
