@@ -23,6 +23,7 @@ import {
 } from "@order/ui/form";
 import { Input } from "@order/ui/input";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { api } from "~/trpc/react";
@@ -30,7 +31,6 @@ import { api } from "~/trpc/react";
 const productSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  // TODO: Make a research if this the quickest way to a form to validate a string to float or number for the price
   price: z.number().or(z.string()).pipe(z.coerce.number()),
   organizationId: z.number().or(z.string()).pipe(z.coerce.number()),
 });
@@ -50,17 +50,16 @@ export function DialogProduct(props: { organizationId: number }) {
 
   const mutation = api.product.create.useMutation({
     onSuccess: (data) => {
-      console.log("data", data);
+      toast.success("Product created successfully");
     },
     onError: (error) => {
-      console.log("error", error);
+      toast.error("Failed to create product");
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log("values", values);
     mutation.mutate(values);
   }
 
