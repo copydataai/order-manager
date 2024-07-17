@@ -1,5 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { schema, schemaZod } from "@order/db";
+import { OrderCreateSchema } from "@order/validators";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
@@ -12,60 +13,8 @@ type Product = typeof schema.product.$inferSelect;
 type Organization = typeof schema.organization.$inferSelect;
 
 export const orderRouter = {
-    create: publicProcedure
-        .input(schemaZod.createOrderSchema)
-        .mutation(async ({ input, ctx }) => {
-            const {
-                orderDate,
-                customerName,
-                status,
-                totalAmount,
-                organizationId,
-            } = input;
-
-            const formattedInput = {
-                orderDate: orderDate.toISOString(), // Convert orderDate to string
-                customerName,
-                status, // Enum value, already correctly typed
-                totalAmount: totalAmount.toString(), // Convert totalAmount to string
-                organizationId,
-            };
-
-            const data = await ctx.db
-                .insert(schema.order)
-                .values(formattedInput);
-            console.log(data);
-
-            return data;
-        }),
-
-    createOrderDetail: publicProcedure
-        .input(schemaZod.createOrderDetailSchema)
-        .mutation(async ({ input, ctx }) => {
-            const formattedInput = {
-                ...input,
-                lineTotal: input.lineTotal.toString(), // Convert lineTotal to string
-            };
-
-            const data = await ctx.db
-                .insert(schema.orderdetails)
-                .values(formattedInput);
-
-            return data;
-        }),
-
-    createOrderAndOrderDetails: publicProcedure
-        .input(
-            z.object({
-                // TODO add enum statusorder by db.schema
-                orderDate: z.date(),
-                customerName: z.string(),
-                status: schemaZod.statusOrderSchema,
-                totalAmount: z.number(),
-                organizationId: z.number(),
-                orderDetails: z.array(schemaZod.createOrderDetailsSchema),
-            }),
-        )
+    createOrderAndOrderDetails: protectedProcedure
+        .input(OrderCreateSchema)
         .mutation(async ({ input, ctx }) => {
             const {
                 orderDate,
