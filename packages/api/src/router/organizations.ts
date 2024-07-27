@@ -7,10 +7,6 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const organizationRouter = {
-    // TODO: change public procedure to protected exept read by id or by name
-    //
-    //
-
     createRole: protectedProcedure
         .input(z.object({ name: z.string() }))
         .mutation(async ({ input, ctx }) => {
@@ -22,7 +18,7 @@ export const organizationRouter = {
             return data;
         }),
 
-    listRoles: publicProcedure.query(({ ctx }) => {
+    listRoles: protectedProcedure.query(({ ctx }) => {
         return ctx.db.select().from(schema.roles);
     }),
 
@@ -107,15 +103,6 @@ export const organizationRouter = {
                 });
 
             return organization[0];
-        }),
-    listByName: publicProcedure
-        .input(z.object({ name: z.string() }))
-        .query(({ input, ctx }) => {
-            const { name } = input;
-            return ctx.db
-                .select()
-                .from(schema.organization)
-                .where(eq(schema.organization.name, name));
         }),
     listAll: protectedProcedure.query(({ ctx }) => {
         const userId = ctx.user.id;
