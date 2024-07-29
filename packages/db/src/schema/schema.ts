@@ -20,7 +20,7 @@ export const statusorder = pgEnum("statusorder", [
 	"CANCELLED",
 	"ORDERED",
 ]);
-export const roles = pgTable(
+export const Roles = pgTable(
 	"roles",
 	{
 		roleId: serial("role_id").primaryKey().notNull(),
@@ -33,7 +33,7 @@ export const roles = pgTable(
 	},
 );
 
-export const user = pgTable(
+export const User = pgTable(
 	"user",
 	{
 		id: uuid("id").primaryKey().notNull(),
@@ -47,25 +47,25 @@ export const user = pgTable(
 	},
 );
 
-export const orderdetails = pgTable("orderdetails", {
+export const OrderDetails = pgTable("orderdetails", {
 	orderDetailId: serial("order_detail_id").primaryKey().notNull(),
 	orderId: integer("order_id")
 		.notNull()
-		.references(() => order.orderId),
+		.references(() => Order.orderId),
 	productId: integer("product_id")
 		.notNull()
-		.references(() => product.productId),
+		.references(() => Product.productId),
 	quantity: integer("quantity").notNull(),
 	lineTotal: numeric("line_total").notNull(),
 });
 
-export const order = pgTable(
+export const Order = pgTable(
 	"order",
 	{
 		orderId: serial("order_id").primaryKey().notNull(),
 		organizationId: integer("organization_id")
 			.notNull()
-			.references(() => organization.organizationId),
+			.references(() => Organization.organizationId),
 		orderDate: timestamp("order_date", { mode: "string" }).notNull(),
 		customerName: varchar("customer_name").notNull(),
 		status: statusorder("status").notNull(),
@@ -86,7 +86,7 @@ export const order = pgTable(
 	},
 );
 
-export const organization = pgTable(
+export const Organization = pgTable(
 	"organization",
 	{
 		organizationId: serial("organization_id").primaryKey().notNull(),
@@ -104,27 +104,27 @@ export const organization = pgTable(
 	},
 );
 
-export const product = pgTable("product", {
+export const Product = pgTable("product", {
 	productId: serial("product_id").primaryKey().notNull(),
 	name: varchar("name").notNull(),
 	description: varchar("description").notNull(),
 	price: numeric("price").notNull(),
 	imageUrl: text("image_url"),
 	organizationId: integer("organization_id").references(
-		() => organization.organizationId,
+		() => Organization.organizationId,
 	),
 });
 
-export const organizationUsers = pgTable(
+export const OrganizationUsers = pgTable(
 	"organization_users",
 	{
 		organizationId: integer("organization_id")
 			.notNull()
-			.references(() => organization.organizationId),
+			.references(() => Organization.organizationId),
 		userId: uuid("user_id")
 			.notNull()
-			.references(() => user.id),
-		roleId: integer("role_id").references(() => roles.roleId),
+			.references(() => User.id),
+		roleId: integer("role_id").references(() => Roles.roleId),
 	},
 	(table) => {
 		return {

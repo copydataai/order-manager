@@ -1,13 +1,19 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { order, orderdetails, organization, product } from "./schema";
+import { Order, OrderDetails, Organization, Product } from "./schema";
 
-export const statusOrderSchema = z.enum(["FINISHED", "CANCELLED", "ORDERED"]);
+export enum status {
+    FINISHED = "FINISHED",
+    CANCELLED = "CANCELLED",
+    ORDERED = "ORDERED",
+}
 
-export const organizationSchema = createSelectSchema(organization);
+export const statusOrderSchema = z.nativeEnum(status);
 
-export const createOrderSchema = createInsertSchema(order, {
+export const organizationSchema = createSelectSchema(Organization);
+
+export const createOrderSchema = createInsertSchema(Order, {
     orderDate: z.date(),
     customerName: z.string(),
     status: statusOrderSchema,
@@ -18,7 +24,7 @@ export const createOrderSchema = createInsertSchema(order, {
     //TODO: add created_at, updated_at
 });
 
-export const createOrderDetailSchema = createInsertSchema(orderdetails, {
+export const createOrderDetailSchema = createInsertSchema(OrderDetails, {
     orderId: z.number(),
     productId: z.number(),
     quantity: z.number(),
@@ -27,7 +33,7 @@ export const createOrderDetailSchema = createInsertSchema(orderdetails, {
     orderDetailId: true,
     //TODO: add created_at, updated_at
 });
-export const createOrderDetailsSchema = createInsertSchema(orderdetails, {
+export const createOrderDetailsSchema = createInsertSchema(OrderDetails, {
     productId: z.number(),
     quantity: z.number(),
     lineTotal: z.number(),
@@ -37,7 +43,7 @@ export const createOrderDetailsSchema = createInsertSchema(orderdetails, {
     //TODO: add created_at, updated_at
 });
 
-export const createProductSchema = createInsertSchema(product, {
+export const createProductSchema = createInsertSchema(Product, {
     name: z.string(),
     description: z.string(),
     price: z.number().or(z.string()).pipe(z.coerce.number()),

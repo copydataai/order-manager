@@ -1,70 +1,70 @@
 import { relations } from "drizzle-orm/relations";
 
 import {
-	order,
-	orderdetails,
-	organization,
-	organizationUsers,
-	product,
-	roles,
-	user,
+	Order,
+	OrderDetails,
+	Organization,
+	OrganizationUsers,
+	Product,
+	Roles,
+	User,
 } from "./schema";
 
-export const orderdetailsRelations = relations(orderdetails, ({ one }) => ({
-	order: one(order, {
-		fields: [orderdetails.orderId],
-		references: [order.orderId],
+export const orderdetailsRelations = relations(OrderDetails, ({ one }) => ({
+	order: one(Order, {
+		fields: [OrderDetails.orderId],
+		references: [Order.orderId],
 	}),
-	product: one(product, {
-		fields: [orderdetails.productId],
-		references: [product.productId],
-	}),
-}));
-
-export const orderRelations = relations(order, ({ one, many }) => ({
-	orderdetails: many(orderdetails),
-	organization: one(organization, {
-		fields: [order.organizationId],
-		references: [organization.organizationId],
+	product: one(Product, {
+		fields: [OrderDetails.productId],
+		references: [Product.productId],
 	}),
 }));
 
-export const productRelations = relations(product, ({ one, many }) => ({
-	orderdetails: many(orderdetails),
-	organization: one(organization, {
-		fields: [product.organizationId],
-		references: [organization.organizationId],
+export const orderRelations = relations(Order, ({ one, many }) => ({
+	orderdetails: many(OrderDetails),
+	organization: one(Organization, {
+		fields: [Order.organizationId],
+		references: [Organization.organizationId],
 	}),
 }));
 
-export const organizationRelations = relations(organization, ({ many }) => ({
-	orders: many(order),
-	products: many(product),
-	organizationUsers: many(organizationUsers),
+export const productRelations = relations(Product, ({ one, many }) => ({
+	orderdetails: many(OrderDetails),
+	organization: one(Organization, {
+		fields: [Product.organizationId],
+		references: [Organization.organizationId],
+	}),
+}));
+
+export const organizationRelations = relations(Organization, ({ many }) => ({
+	orders: many(Order),
+	products: many(Product),
+	organizationUsers: many(OrganizationUsers),
 }));
 
 export const organizationUsersRelations = relations(
-	organizationUsers,
+	OrganizationUsers,
 	({ one }) => ({
-		organization: one(organization, {
-			fields: [organizationUsers.organizationId],
-			references: [organization.organizationId],
+		organization: one(Organization, {
+			fields: [OrganizationUsers.organizationId],
+			references: [Organization.organizationId],
 		}),
-		role: one(roles, {
-			fields: [organizationUsers.roleId],
-			references: [roles.roleId],
+		role: one(Roles, {
+			fields: [OrganizationUsers.roleId],
+			references: [Roles.roleId],
 		}),
-		user: one(user, {
-			fields: [organizationUsers.userId],
-			references: [user.id],
+		user: one(User, {
+			fields: [OrganizationUsers.userId],
+			references: [User.id],
 		}),
 	}),
 );
 
-export const rolesRelations = relations(roles, ({ many }) => ({
-	organizationUsers: many(organizationUsers),
+export const rolesRelations = relations(Roles, ({ many }) => ({
+	organizationUsers: many(OrganizationUsers),
 }));
 
-export const userRelations = relations(user, ({ many }) => ({
-	organizationUsers: many(organizationUsers),
+export const userRelations = relations(User, ({ many }) => ({
+	organizationUsers: many(OrganizationUsers),
 }));
