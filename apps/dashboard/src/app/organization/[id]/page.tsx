@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@order/ui/tabs";
 
 import { DialogOrder } from "~/components/DialogOrders";
 import { DialogProduct } from "~/components/DialogProduct";
@@ -28,10 +29,24 @@ export default async function OrganizationPage({
         <div className="flex gap-4">
           <DialogOrder organizationId={organizationId} />
           <DialogProduct organizationId={id} />
+          <TeamMembersCard organizationId={organizationId} />
         </div>
-        <ProductList products={products} />
-        <OrdersTable organizationId={organizationId} />
-        <TeamMembersCard organizationId={organizationId} />
+
+        <Tabs
+          defaultValue="products"
+          className="flex w-[400px] flex-col items-center gap-2"
+        >
+          <TabsList>
+            <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="orders">Orders</TabsTrigger>
+          </TabsList>
+          <TabsContent value="products">
+            <ProductList products={products} />
+          </TabsContent>
+          <TabsContent value="orders">
+            <OrdersTable organizationId={organizationId} />
+          </TabsContent>
+        </Tabs>
       </section>
     </>
   );
