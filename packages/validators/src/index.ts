@@ -1,3 +1,4 @@
+import { statusOrderSchema } from "@order/db/schema";
 import { z } from "zod";
 
 // auth
@@ -40,7 +41,7 @@ export const OrganizationCreateSchema = z.object({
   contactInfo: z.string().min(1, { message: "Contact Info is required" }),
 });
 
-export const OrganizationCreate = z.infer<typeof OrganizationCreateSchema>;
+export type OrganizationCreate = z.infer<typeof OrganizationCreateSchema>;
 
 // Orders
 export const OrderDetailCreateSchema = z.object({
@@ -54,7 +55,7 @@ export type OrderDetailCreate = z.infer<typeof OrderDetailCreateSchema>;
 export const OrderCreateSchema = z.object({
   customerName: z.string().min(1, { message: "Customer name is required" }),
   orderDate: z.date().or(z.string()).optional(),
-  status: z.enum(["FINISHED", "CANCELLED", "ORDERED"]),
+  status: statusOrderSchema,
   orderDetails: z.array(OrderDetailCreateSchema),
   totalAmount: z.number().or(z.string()).pipe(z.coerce.number()),
   organizationId: z.number().or(z.string()).pipe(z.coerce.number()),
