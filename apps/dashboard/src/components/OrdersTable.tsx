@@ -110,6 +110,7 @@ export const columns: ColumnDef<OrderDetailsProduct>[] = [
             <div>
               {details.map((orderDetail) => (
                 <OrderDetailsCard
+                  key={orderDetail.orderDetailId}
                   orderDetail={orderDetail.orderdetail}
                   product={orderDetail.product}
                 />
@@ -147,7 +148,7 @@ export function OrdersTable({ organizationId }) {
   }
 
   return (
-    <section className="flex w-full flex-col items-center justify-center gap-4 px-4 py-16 md:w-1/2">
+    <section className="flex w-full flex-col items-center justify-center gap-4 px-4 py-16">
       <DataTable data={Object.values(data)} columns={columns} />
     </section>
   );

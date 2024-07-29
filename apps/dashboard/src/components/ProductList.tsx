@@ -12,7 +12,7 @@ export function ProductList(props: { products: any[] }) {
   }
 
   return (
-    <div className="grid w-full grid-cols-2 items-center justify-center gap-4 px-4 py-16 md:w-1/2 md:grid-cols-4">
+    <div className="grid w-full grid-cols-2 items-center justify-center gap-4 px-4 py-16 md:grid-cols-4">
       {props.products.map((prod) => {
         return <ProductCard key={prod.productId} product={prod} />;
       })}

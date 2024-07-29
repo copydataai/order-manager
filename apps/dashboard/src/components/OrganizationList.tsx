@@ -44,7 +44,6 @@ export function OrganizationList() {
             as={`/organization/${org.organizationId}`}
             key={org.organizationId}
             className="grow-0 hover:grow"
-            asChild
           >
             <OrganizationCard key={org.organizationId} organization={org} />
           </Link>
