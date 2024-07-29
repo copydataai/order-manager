@@ -1,5 +1,10 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { schema, schemaZod } from "@order/db";
+import {
+    createProductSchema,
+    Organization,
+    OrganizationUsers,
+    Product,
+} from "@order/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 
@@ -11,32 +16,30 @@ export const productRouter = {
         .query(async ({ input, ctx }) => {
             const product = await ctx.db
                 .select()
-                .from(schema.product)
-                .where(eq(schema.product.productId, input.productId))
+                .from(Product)
+                .where(eq(Product.productId, input.productId))
                 .limit(1);
 
             return product[0]!;
         }),
 
     create: protectedProcedure
-        .input(schemaZod.createProductSchema)
+        .input(createProductSchema)
         .mutation(async ({ input, ctx }) => {
             const formattedInput = {
                 ...input,
                 price: input.price.toString(),
             };
-            const data = await ctx.db
-                .insert(schema.product)
-                .values(formattedInput);
+            const data = await ctx.db.insert(Product).values(formattedInput);
         }),
     listAllByUserId: protectedProcedure.query(async ({ ctx }) => {
         const userId = ctx.user.id;
         const organizations = await ctx.db
             .select({
-                organizationId: schema.organizationUsers.organizationId,
+                organizationId: OrganizationUsers.organizationId,
             })
-            .from(schema.organizationUsers)
-            .where(eq(schema.organizationUsers.userId, userId));
+            .from(OrganizationUsers)
+            .where(eq(OrganizationUsers.userId, userId));
 
         // because inArray doesn't accept empty arrays
         if (organizations.length === 0) return [];
@@ -45,31 +48,19 @@ export const productRouter = {
 
         const products = await ctx.db
             .select()
-            .from(schema.product)
-            .where(inArray(schema.product.organizationId, organizationsIds));
+            .from(Product)
+            .where(inArray(Product.organizationId, organizationsIds));
 
         return products;
     }),
-    // TODO: make query case no sesitive for products by name in a specific organization
-    // listByNameAndOrganizationId: publicProcedure
-    //     .input(z.object({ name: z.string(), organizationId: z.number() }))
-    //     .query(async ({ input, ctx }) => {
-    //         const { name, organizationId } = input;
-    //         // TODO: add "like" for uncase sensitive queries
-    //         const data = await ctx.db.select().from(schema.product).where({
-    //             name,
-    //             organizationId,
-    //         });
-    //         return data;
-    //     }),
     listAllByOrganizationID: protectedProcedure
         .input(z.object({ organizationId: z.number() }))
         .query(async ({ input, ctx }) => {
             const { organizationId } = input;
             const data = await ctx.db
                 .select()
-                .from(schema.product)
-                .where(eq(schema.product.organizationId, organizationId));
+                .from(Product)
+                .where(eq(Product.organizationId, organizationId));
 
             return data;
         }),
@@ -82,15 +73,15 @@ export const productRouter = {
 
             const organization = await ctx.db
                 .select()
-                .from(schema.organization)
-                .where(eq(schema.organization.name, name));
+                .from(Organization)
+                .where(eq(Organization.name, name));
 
             const { organizationId } = organization[0]!;
 
             const data = await ctx.db
                 .select()
-                .from(schema.product)
-                .where(eq(schema.product.organizationId, organizationId));
+                .from(Product)
+                .where(eq(Product.organizationId, organizationId));
 
             return data;
         }),
@@ -100,8 +91,8 @@ export const productRouter = {
         .mutation(async ({ input, ctx }) => {
             const { id } = input;
             const data = await ctx.db
-                .delete(schema.product)
-                .where(eq(schema.product.productId, id));
+                .delete(Product)
+                .where(eq(Product.productId, id));
 
             return data;
         }),

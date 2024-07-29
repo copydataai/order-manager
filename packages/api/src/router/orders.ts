@@ -1,16 +1,16 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { schema, schemaZod } from "@order/db";
-import { OrderCreateSchema } from "@order/validators";
+import { Order, OrderDetails, Organization, Product } from "@order/db/schema";
+import { OrderCreate, OrderCreateSchema } from "@order/validators";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 // TODO: Fix the types
-type Order = typeof schema.order.$inferSelect;
-type Orderdetail = typeof schema.orderdetails.$inferSelect;
-type Product = typeof schema.product.$inferSelect;
-type Organization = typeof schema.organization.$inferSelect;
+type Order = typeof Order.$inferSelect;
+type OrderDetail = typeof OrderDetails.$inferSelect;
+type Product = typeof Product.$inferSelect;
+type Organization = typeof Organization.$inferSelect;
 
 export const orderRouter = {
     createOrderAndOrderDetails: protectedProcedure
@@ -33,7 +33,7 @@ export const orderRouter = {
             };
 
             const order = await ctx.db
-                .insert(schema.order)
+                .insert(Order)
                 .values(formattedInput)
                 .returning();
 
@@ -45,7 +45,7 @@ export const orderRouter = {
                 lineTotal: detail.lineTotal.toString(), // Convert lineTotal to string
             }));
 
-            await ctx.db.insert(schema.orderdetails).values(details);
+            await ctx.db.insert(OrderDetails).values(details);
             return "thank you";
         }),
 
@@ -56,8 +56,8 @@ export const orderRouter = {
 
             const orders = await ctx.db
                 .select()
-                .from(schema.order)
-                .where(eq(schema.order.organizationId, organizationId));
+                .from(Order)
+                .where(eq(Order.organizationId, organizationId));
 
             return orders;
         }),
@@ -67,15 +67,15 @@ export const orderRouter = {
         .query(async ({ input, ctx }) => {
             const ordersDetailsProducts = await ctx.db
                 .select()
-                .from(schema.order)
-                .where(eq(schema.order.organizationId, input.organizationId))
+                .from(Order)
+                .where(eq(Order.organizationId, input.organizationId))
                 .innerJoin(
-                    schema.orderdetails,
-                    eq(schema.order.orderId, schema.orderdetails.orderId),
+                    OrderDetails,
+                    eq(Order.orderId, OrderDetails.orderId),
                 )
                 .innerJoin(
-                    schema.product,
-                    eq(schema.product.productId, schema.orderdetails.productId),
+                    Product,
+                    eq(Product.productId, OrderDetails.productId),
                 );
 
             const result = ordersDetailsProducts.reduce<
@@ -84,7 +84,7 @@ export const orderRouter = {
                     {
                         order: Order;
                         orderdetails: {
-                            orderdetail: Orderdetail;
+                            orderdetail: OrderDetail;
                             product: Product;
                         }[];
                     }
@@ -111,22 +111,13 @@ export const orderRouter = {
     listAll: protectedProcedure.query(async ({ ctx }) => {
         const orders = await ctx.db
             .select()
-            .from(schema.order)
+            .from(Order)
             .innerJoin(
-                schema.organization,
-                eq(
-                    schema.order.organizationId,
-                    schema.organization.organizationId,
-                ),
+                Organization,
+                eq(Order.organizationId, Organization.organizationId),
             )
-            .innerJoin(
-                schema.orderdetails,
-                eq(schema.order.orderId, schema.orderdetails.orderId),
-            )
-            .innerJoin(
-                schema.product,
-                eq(schema.product.productId, schema.orderdetails.productId),
-            );
+            .innerJoin(OrderDetails, eq(Order.orderId, OrderDetails.orderId))
+            .innerJoin(Product, eq(Product.productId, OrderDetails.productId));
 
         const result = orders.reduce<
             Record<
@@ -135,7 +126,7 @@ export const orderRouter = {
                     organization: Organization;
                     order: Order;
                     orderdetails: {
-                        orderdetail: Orderdetail;
+                        orderdetail: OrderDetail;
                         product: Product;
                     }[];
                 }
@@ -165,8 +156,8 @@ export const orderRouter = {
         .query(async ({ input, ctx }) => {
             const orders = await ctx.db
                 .select()
-                .from(schema.orderdetails)
-                .where(eq(schema.orderdetails.orderId, input.orderId));
+                .from(OrderDetails)
+                .where(eq(OrderDetails.orderId, input.orderId));
 
             return orders;
         }),
@@ -176,11 +167,11 @@ export const orderRouter = {
         .query(async ({ input, ctx }) => {
             const orders = await ctx.db
                 .select()
-                .from(schema.orderdetails)
-                .where(eq(schema.orderdetails.orderId, input.orderId))
+                .from(OrderDetails)
+                .where(eq(OrderDetails.orderId, input.orderId))
                 .innerJoin(
-                    schema.product,
-                    eq(schema.orderdetails.productId, schema.product.productId),
+                    Product,
+                    eq(OrderDetails.productId, Product.productId),
                 );
 
             console.log("orders", orders);

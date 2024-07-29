@@ -1,5 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { schema } from "@order/db";
+import { Organization, OrganizationUsers, Roles, User } from "@order/db/schema";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -12,14 +12,14 @@ export const organizationRouter = {
         .mutation(async ({ input, ctx }) => {
             const { name } = input;
             const data = await ctx.db
-                .insert(schema.roles)
+                .insert(Roles)
                 .values({ name })
                 .returning();
             return data;
         }),
 
     listRoles: protectedProcedure.query(({ ctx }) => {
-        return ctx.db.select().from(schema.roles);
+        return ctx.db.select().from(Roles);
     }),
 
     listUserAndRolesByOrganizationId: protectedProcedure
@@ -28,24 +28,16 @@ export const organizationRouter = {
             const { organizationId } = input;
             const usersRoles = await ctx.db
                 .select({
-                    roleId: schema.roles.roleId,
-                    roleName: schema.roles.name,
-                    userId: schema.user.id,
-                    userFirstName: schema.user.firstName,
-                    userLastName: schema.user.lastName,
+                    roleId: Roles.roleId,
+                    roleName: Roles.name,
+                    userId: User.id,
+                    userFirstName: User.firstName,
+                    userLastName: User.lastName,
                 })
-                .from(schema.organizationUsers)
-                .where(
-                    eq(schema.organizationUsers.organizationId, organizationId),
-                )
-                .innerJoin(
-                    schema.roles,
-                    eq(schema.roles.roleId, schema.organizationUsers.roleId),
-                )
-                .innerJoin(
-                    schema.user,
-                    eq(schema.user.id, schema.organizationUsers.userId),
-                );
+                .from(OrganizationUsers)
+                .where(eq(OrganizationUsers.organizationId, organizationId))
+                .innerJoin(Roles, eq(Roles.roleId, OrganizationUsers.roleId))
+                .innerJoin(User, eq(User.id, OrganizationUsers.userId));
 
             // return {users, roles};
             return usersRoles;
@@ -61,7 +53,7 @@ export const organizationRouter = {
         )
         .mutation(async ({ input, ctx }) => {
             const { name, location, contactInfo } = input;
-            const data = await ctx.db.insert(schema.organization).values({
+            const data = await ctx.db.insert(Organization).values({
                 name,
                 location,
                 contactInfo,
@@ -81,7 +73,7 @@ export const organizationRouter = {
             const { user } = ctx;
 
             const organization = await ctx.db
-                .insert(schema.organization)
+                .insert(Organization)
                 .values({
                     name,
                     location,
@@ -91,11 +83,11 @@ export const organizationRouter = {
 
             const adminRole = await ctx.db
                 .select()
-                .from(schema.roles)
-                .where(eq(schema.roles.name, "admin"));
+                .from(Roles)
+                .where(eq(Roles.name, "admin"));
 
             const organizationUsers = await ctx.db
-                .insert(schema.organizationUsers)
+                .insert(OrganizationUsers)
                 .values({
                     organizationId: organization[0]!.organizationId,
                     roleId: adminRole[0]!.roleId,
@@ -108,18 +100,18 @@ export const organizationRouter = {
         const userId = ctx.user.id;
         return ctx.db
             .select({
-                organizationId: schema.organization.organizationId,
-                organizationName: schema.organization.name,
-                organizationLocation: schema.organization.location,
-                organizationContactInfo: schema.organization.contactInfo,
+                organizationId: Organization.organizationId,
+                organizationName: Organization.name,
+                organizationLocation: Organization.location,
+                organizationContactInfo: Organization.contactInfo,
             })
-            .from(schema.organizationUsers)
-            .where(eq(schema.organizationUsers.userId, userId))
+            .from(OrganizationUsers)
+            .where(eq(OrganizationUsers.userId, userId))
             .innerJoin(
-                schema.organization,
+                Organization,
                 eq(
-                    schema.organization.organizationId,
-                    schema.organizationUsers.organizationId,
+                    Organization.organizationId,
+                    OrganizationUsers.organizationId,
                 ),
             );
     }),
@@ -129,8 +121,8 @@ export const organizationRouter = {
             const { name } = input;
             const data = await ctx.db
                 .select()
-                .from(schema.organization)
-                .where(eq(schema.organization.name, name));
+                .from(Organization)
+                .where(eq(Organization.name, name));
 
             return data[0];
         }),
