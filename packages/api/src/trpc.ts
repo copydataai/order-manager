@@ -10,7 +10,7 @@
 import type { AuthUser, SupabaseClient } from "@supabase/supabase-js";
 import type { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { db } from "@order/db";
+import { db } from "@order/db/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
