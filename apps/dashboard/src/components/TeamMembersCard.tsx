@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@order/ui/select";
+import { Separator } from "@order/ui/separator";
 
 import { api } from "~/trpc/react";
 
@@ -42,28 +43,31 @@ export function TeamMembersCard({ organizationId: number }) {
   if (isError) return <p>Error: {error.message}</p>;
 
   return (
-    <Card className="bg-base-100 w-80 shadow-xl">
+    <Card className="bg-base-100 w-72 shadow-xl">
       <CardHeader>
         <CardTitle>Team members</CardTitle>
       </CardHeader>
       <CardContent>
         {data?.map((user, index) => (
-          <div>
-            <p key={index}>
-              <b>{user.firstName}</b>
-            </p>
-            <Select className="w-1/2">
-              <SelectTrigger>
-                <SelectValue placeholder={user.name} />
-              </SelectTrigger>
-              <SelectContent>
-                {roles.data.map((role, roleIndex) => (
-                  <SelectItem key={roleIndex} value={role.roleId}>
-                    {role.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div key={index} className="flex flex-col items-center gap-2">
+            <div className="flex items-center justify-between gap-4">
+              <b>
+                {user.userFirstName} {user.userLastName}
+              </b>
+              <Select>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder={user.roleName} />
+                </SelectTrigger>
+                <SelectContent>
+                  {roles.data.map((role, roleIndex) => (
+                    <SelectItem key={roleIndex} value={role.roleId}>
+                      {role.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Separator />
           </div>
         ))}
       </CardContent>
